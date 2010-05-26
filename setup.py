@@ -11,7 +11,14 @@ setup_info = dict(
     url='https://launchpad.net/jobservice',
     packages=['JobService'],
     scripts=['jobservice'],
+    data_files=[
+        ('share/dbus-1/system-services/', ['com.ubuntu.JobService.service']),
+        ('/etc/dbus-1/system.d/', ['com.ubuntu.JobService.conf'])
+        ('share/polkit-1/actions', ['com.ubuntu.jobservice.policy']),
+    ],
 )
+
+#TODO: modify com.ubuntu.JobService.service to replace the installation path
 
 setup(**setup_info)
 
