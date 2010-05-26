@@ -1,0 +1,43 @@
+#!/usr/bin/python
+
+from gobject import threads_init, MainLoop
+from dbus import SystemBus
+from dbus.service import BusName, Object as DBusObject
+from dbus.mainloop.glib import DBusGMainLoop
+
+
+class JobDBusService(DBusObject):
+    
+    def __init__(self):
+        pass
+    
+    @dbus.service.method('com.ubuntu.JobService', in_signature='', out_signature='a{sas}')
+    def GetAllJobs(self):
+        pass
+    
+    def GetJob(self, jobname):
+        pass
+    
+    def StartJob(self, jobname, enable):
+        pass
+    
+    def StopJob(self, jobname, disable):
+        pass
+    
+    def GetJobSettings(self):
+        pass
+    
+    def SetJobSettings(self):
+        pass
+
+
+if __name__ == '__main__':
+    DBusGMainLoop(set_as_default=True)
+    threads_init()
+
+    srv = JobDBusService(
+        BusName('com.ubuntu.JobService', bus=SystemBus()),
+        '/com/ubuntu/JobService'
+    )
+    srv.loop = MainLoop()
+    srv.loop.run()
