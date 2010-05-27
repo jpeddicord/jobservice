@@ -2,10 +2,11 @@
 from re import search
 from subprocess import Popen, PIPE
 
-class ServiceBackend:
+
+class ServiceBase:
         
     def get_all_services(self):
-        return ['example_1', 'example_2', 'example_3']
+        return []
     
     def start_service(self, name):
         print "Starting", name
@@ -14,13 +15,21 @@ class ServiceBackend:
         print "Stopping", name
     
 
-class ServiceProxy(ServiceBackend):
+class ServiceProxy(ServiceBase):
+    """
+    Fake backend object that calls upon one or more real service backends
+    to do the heavy lifting.
+    """
     
     def __init__(self):
-        self.modules = []
+        """
+        Load the appropriate backends for the current system.
+        """
+        self.backends = []
+        self.svcmap = {}
         load = ['sysv']
         
-        # check the initd for what we need to load
+        # check for upstart
         p = Popen(['init', '--version'], stdout=PIPE)
         out = p.stdout.read()
         
@@ -31,6 +40,17 @@ class ServiceProxy(ServiceBackend):
             elif match.group(1) == '0.10':
                 load += ['upstart_0_10']
         
+        # load the backends
         for mod in load:
-            self.modules += [__import__('JobService.backends.%s' % mod)]
+            newmod = __import__('JobService.backends.%s' % mod,
+                                fromlist=['ServiceBackend'])
+            newbackend = newmod.ServiceBackend()
+            self.backends += [newbackend]
+            self.svcmap[newbackend] = []
+    
+    def get_all_services(self):
+        svclist = []
+        for bk in self.backends:
+            svclist += bk.get_all_services()
+        return svclist
     

@@ -1,10 +1,13 @@
 
 from dbus import PROPERTIES_IFACE
 from dbus.service import BusName, Object as DBusObject, method as DBusMethod
-from JobService import DBUS_IFACE, JobException
+from JobService import DBUS_JOB_IFACE, JobException
 
 
 class SingleJobService(DBusObject):
+    """
+    Exports a single job as its own object on our bus.
+    """
     
     @DBusMethod(PROPERTIES_IFACE, in_signature='s', out_signature='a{sv}')
     def GetAll(self, interface):
@@ -27,7 +30,7 @@ class SingleJobService(DBusObject):
         else:
             raise JobException('Interface not supported.')
     
-    @DBusMethod(DBUS_IFACE, in_signature='s', out_signature='(ssssbbasasai)',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='s', out_signature='(ssssbbasasai)',
                 sender_keyword='sender', connection_keyword='conn')
     def GetJob(self, jobname, sender=None, conn=None):
         """
@@ -47,7 +50,7 @@ class SingleJobService(DBusObject):
         """
         pass
     
-    @DBusMethod(DBUS_IFACE, in_signature='s', out_signature='',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='s', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
     def StartJob(self, jobname, sender=None, conn=None):
         """
@@ -55,7 +58,7 @@ class SingleJobService(DBusObject):
         """
         pass
     
-    @DBusMethod(DBUS_IFACE, in_signature='s', out_signature='',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='s', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
     def StopJob(self, jobname, sender=None, conn=None):
         """
@@ -63,7 +66,7 @@ class SingleJobService(DBusObject):
         """
         pass
     
-    @DBusMethod(DBUS_IFACE, in_signature='s', out_signature='a{s(ssss)}',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='s', out_signature='a{s(ssss)}',
                 sender_keyword='sender', connection_keyword='conn')
     def GetJobSettings(self, jobname, sender=None, conn=None):
         """
@@ -81,7 +84,7 @@ class SingleJobService(DBusObject):
         """
         pass
     
-    @DBusMethod(DBUS_IFACE, in_signature='sa{s(ssss)}', out_signature='',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='sa{s(ssss)}', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
     def SetJobSettings(self, jobname, settings, sender=None, conn=None):
         """

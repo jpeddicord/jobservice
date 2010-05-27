@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import sys
 from gobject import threads_init, MainLoop
 from dbus import SystemBus
 from dbus.service import BusName, Object as DBusObject, method as DBusMethod
@@ -7,6 +8,7 @@ from dbus.mainloop.glib import DBusGMainLoop
 from JobService import DBUS_IFACE, DBUS_PATH
 from JobService.backends import ServiceProxy
 from JobService.job import SingleJobService
+from JobService.util import dbus_safe_name
 
 
 class RootJobService(DBusObject):
@@ -21,7 +23,7 @@ class RootJobService(DBusObject):
         
         # create an object for each available job
         for job in self.proxy.get_all_services():
-            SingleJobService(conn, '%s/%s' % (DBUS_PATH, job))
+            SingleJobService(conn, '%s/%s' % (DBUS_PATH, dbus_safe_name(job)))
         
     
     @DBusMethod(DBUS_IFACE, in_signature='', out_signature='(sb)',
@@ -35,7 +37,8 @@ class RootJobService(DBusObject):
             boolean running
         )
         """
-        pass
+        
+        self.proxy.get_all_services()
     
 
 if __name__ == '__main__':
