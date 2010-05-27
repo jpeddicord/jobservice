@@ -6,22 +6,21 @@ from JobService import DBUS_IFACE, JobException
 
 class SingleJobService(DBusObject):
     
-    @method(PROPERTIES_IFACE, in_signature='s', out_signature='a{sv}')
+    @DBusMethod(PROPERTIES_IFACE, in_signature='s', out_signature='a{sv}')
     def GetAll(self, interface):
         if interface == DBUS_IFACE:
             pass
         else:
             raise JobException('Interface not supported.')
             
-
-    @method(PROPERTIES_IFACE, in_signature='ss', out_signature='v')
+    @DBusMethod(PROPERTIES_IFACE, in_signature='ss', out_signature='v')
     def GetAll(self, interface, prop):
         if interface == DBUS_IFACE:
             pass
         else:
             raise JobException('Interface not supported.')
 
-    @method(PROPERTIES_IFACE, in_signature='ssv', out_signature='')
+    @DBusMethod(PROPERTIES_IFACE, in_signature='ssv', out_signature='')
     def Set(self, interface, prop, value):
         if interface == DBUS_IFACE:
             pass
