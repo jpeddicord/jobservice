@@ -22,11 +22,11 @@ class RootJobService(DBusObject):
         self.proxy = ServiceProxy()
         
         # create an object for each available job
-        for job in self.proxy.get_all_services():
+        for job, running in self.proxy.get_all_services():
             SingleJobService(conn, '%s/%s' % (DBUS_PATH, dbus_safe_name(job)))
         
     
-    @DBusMethod(DBUS_IFACE, in_signature='', out_signature='(sb)',
+    @DBusMethod(DBUS_IFACE, in_signature='', out_signature='a(sb)',
                 sender_keyword='sender', connection_keyword='conn')
     def GetAllJobs(self, sender=None, conn=None):
         """
@@ -38,7 +38,7 @@ class RootJobService(DBusObject):
         )
         """
         
-        self.proxy.get_all_services()
+        return self.proxy.get_all_services()
     
 
 if __name__ == '__main__':
