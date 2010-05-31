@@ -9,7 +9,7 @@ setup_info = dict(
     author='Jacob Peddicord',
     author_email='jpeddicord@ubuntu.com',
     url='https://launchpad.net/jobservice',
-    packages=['JobService'],
+    packages=['JobService', 'JobService.backends'],
     scripts=['jobservice'],
     data_files=[
         ('share/dbus-1/system-services/', ['com.ubuntu.JobService.service']),

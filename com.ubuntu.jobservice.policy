@@ -10,7 +10,7 @@
 
     <action id="com.ubuntu.JobService">
         <description>Allows access to system job management</description>
-        <message>System policy prevents you from managing jobs</message>
+        <message>Authorization is required to manage jobs</message>
         <defaults>
             <allow_any>auth_admin_keep</allow_any>
             <allow_inactive>auth_admin_keep</allow_inactive>
