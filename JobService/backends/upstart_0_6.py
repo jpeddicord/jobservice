@@ -48,12 +48,17 @@ class ServiceBackend(ServiceBase):
                 svclist[job_name] = False
         return svclist
     
-#    def get_service(self, name):
-#        # specific instance, not just a job
-#        if '/' in name:
-#            pass
-#        # a single job
-#        else:
-#            path = self.namepath[name]
-#            if self.instances[
+    def get_service(self, name):
+        # job-level properties
+        job_obj = self.bus.get_object('com.ubuntu.Upstart', self.jobpaths[name])
+        props = job_obj.GetAll('com.ubuntu.Upstart0_6.Job',
+                               dbus_interface=PROPERTIES_IFACE)
+        # instance-level properties
+        # specific instance, not just a job
+        if '/' in name:
+            pass
+        # a single job
+        else:
+            pass
         
+        return props

@@ -37,8 +37,7 @@ class ServiceProxy(ServiceBase):
         """
         Load the appropriate backends for the current system.
         """
-        self.backends = []
-        self.svcmap = {}
+        self.backends = {}
         load = ['sysv']
         
         # check for upstart
@@ -57,12 +56,23 @@ class ServiceProxy(ServiceBase):
             newmod = __import__('JobService.backends.%s' % mod,
                                 fromlist=['ServiceBackend'])
             newbackend = newmod.ServiceBackend()
-            self.backends += [newbackend]
-            self.svcmap[newbackend] = []
+            self.backends[newbackend] = []
     
     def get_all_services(self):
+        """
+        Get all services from all backends.
+        """
         svclist = {}
         for bk in self.backends:
-            svclist.update(bk.get_all_services())
+            self.backends[bk] = bk.get_all_services()
+            svclist.update(self.backends[bk])
         return svclist
     
+    def get_service(self, name):
+        """
+        Get a single service from the appropriate backend.
+        """
+        for bk in self.backends:
+            # check backend lists for services
+            if name in self.backends[bk]:
+                return bk.get_service(name)
