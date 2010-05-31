@@ -8,6 +8,18 @@ class ServiceBase:
     def get_all_services(self):
         return []
     
+    def get_service(self, name):
+        return {
+            'name': 'example-service',
+            'description': 'an example service',
+            'version': '0.1',
+            'author': 'Nobody',
+            'running': False,
+            'automatic': False,
+            'dependencies': ['example-base'],
+            'runlevels': [2, 3],
+        }
+    
     def start_service(self, name):
         print "Starting", name
     
@@ -49,8 +61,8 @@ class ServiceProxy(ServiceBase):
             self.svcmap[newbackend] = []
     
     def get_all_services(self):
-        svclist = []
+        svclist = {}
         for bk in self.backends:
-            svclist += bk.get_all_services()
+            svclist.update(bk.get_all_services())
         return svclist
     

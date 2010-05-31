@@ -20,25 +20,39 @@ class RootJobService(DBusObject):
         DBusObject.__init__(self, conn, object_path, bus_name)
         
         self.proxy = ServiceProxy()
+        self.jobs = []
         
         # create an object for each available job
-        for job, running in self.proxy.get_all_services():
-            SingleJobService(conn, '%s/%s' % (DBUS_PATH, dbus_safe_name(job)))
+        for job, running in self.proxy.get_all_services().iteritems():
+            self.jobs.append(SingleJobService(
+                conn,
+                '%s/%s' % (DBUS_PATH, dbus_safe_name(job)),
+                name=job,
+                proxy=self.proxy,
+                running=running
+            ))
         
     
-    @DBusMethod(DBUS_IFACE, in_signature='', out_signature='a(sb)',
+    @DBusMethod(DBUS_IFACE, in_signature='', out_signature='a(sob)',
                 sender_keyword='sender', connection_keyword='conn')
     def GetAllJobs(self, sender=None, conn=None):
         """
         Returns all jobs known by the backend(s), along with their states.
         
-        Returns struct (
+        Returns array of struct (
             string name
+            object path
             boolean running
         )
         """
-        
-        return self.proxy.get_all_services()
+        svclist = []
+        for job in self.jobs:
+            svclist.append((
+                job.name,
+                job.path,
+                job.running
+            ))
+        return svclist
     
 
 if __name__ == '__main__':
