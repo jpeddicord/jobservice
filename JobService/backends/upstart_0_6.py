@@ -4,6 +4,8 @@ from JobService.backends import ServiceBase
 
 
 class ServiceBackend(ServiceBase):
+    
+    backend_name = "Upstart 0.6"
         
     def __init__(self):
         """
@@ -27,8 +29,8 @@ class ServiceBackend(ServiceBase):
             self.jobpaths[job_name] = path
             # get the instance(s) and their states
             instances = job.GetAllInstances()
+            self.instpaths[path] = []
             if instances:
-                self.instpaths[path] = []
                 for inst_path in instances:
                     self.instpaths[path].append(inst_path)
                     inst_obj = self.bus.get_object('com.ubuntu.Upstart',
@@ -49,16 +51,42 @@ class ServiceBackend(ServiceBase):
         return svclist
     
     def get_service(self, name):
+        # some defaults for values we might not find
+        info = {
+            'running': False,
+            'automatic': False,
+            'starton': [],
+            'stopon': []
+        }
+        # get the job name if we're an instance
+        if '/' in name:
+            job_name = name[:name.index('/')]
+            inst_name = name[name.index('/')+1:]
+        else:
+            job_name = name
+            inst_name = None
         # job-level properties
-        job_obj = self.bus.get_object('com.ubuntu.Upstart', self.jobpaths[name])
+        job_obj = self.bus.get_object('com.ubuntu.Upstart', self.jobpaths[job_name])
         props = job_obj.GetAll('com.ubuntu.Upstart0_6.Job',
                                dbus_interface=PROPERTIES_IFACE)
-        # instance-level properties
-        # specific instance, not just a job
-        if '/' in name:
-            pass
-        # a single job
-        else:
-            pass
-        
+        # TODO: automatic, starton, stopon
+        # running state: check the instance(s)
+        for inst_path in self.instpaths[self.jobpaths[job_name]]:
+            inst_obj = self.bus.get_object('com.ubuntu.Upstart', inst_path)
+            inst_props = inst_obj.GetAll(
+                'com.ubuntu.Upstart0_6.Instance',
+                dbus_interface=PROPERTIES_IFACE
+            )
+            # we've found our (named) instance
+            if inst_props['name'] == inst_name:
+                info['running'] = (inst_props['state'] == 'running')
+                break
+            # fall back on any available instance
+            info['running'] = (inst_props['state'] == 'running')
         return props
+    
+    def _get_startstop(self, name, start=True):
+        
+        def parse_paren(text):
+            pass
+    
