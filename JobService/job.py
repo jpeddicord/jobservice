@@ -40,7 +40,7 @@ class SingleJobService(DBusObject):
         """
         Starts a job by name.
         """
-        pass
+        self.proxy.start_service(self.name)
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
@@ -48,7 +48,7 @@ class SingleJobService(DBusObject):
         """
         Stops a job by name.
         """
-        pass
+        self.proxy.stop_service(self.name)
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='a{s(ssss)}',
                 sender_keyword='sender', connection_keyword='conn')

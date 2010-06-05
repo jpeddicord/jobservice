@@ -80,3 +80,14 @@ class ServiceProxy(ServiceBase):
                 info = {'backend': bk.backend_name}
                 info.update(bk.get_service(name))
                 return info
+    
+    def start_service(self, name):
+        for bk in self.backends:
+            if name in self.backends[bk]:
+                bk.start_service(name)
+    
+    def stop_service(self, name):
+        for bk in self.backends:
+            if name in self.backends[bk]:
+                bk.stop_service(name)
+                    
