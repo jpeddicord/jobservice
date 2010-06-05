@@ -59,7 +59,7 @@ class ServiceProxy(ServiceBase):
                                 fromlist=['ServiceBackend'])
             newbackend = newmod.ServiceBackend()
             self.backends[newbackend] = []
-    
+        
     def get_all_services(self):
         """
         Get all services from all backends.

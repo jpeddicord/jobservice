@@ -9,12 +9,13 @@ class SingleJobService(DBusObject):
     Exports a single job as its own object on our bus.
     """
     
-    def __init__(self, conn=None, object_path=None, bus_name=None, name=None, proxy=None, running=False):
+    def __init__(self, conn=None, object_path=None, bus_name=None, name=None, proxy=None, running=False, policy=None):
         DBusObject.__init__(self, conn, object_path, bus_name)
         
         self.name = name
         self.proxy = proxy
         self.running = running
+        self.policy = policy
         self.path = self.__dbus_object_path__
         self._props = {}
     
@@ -40,6 +41,7 @@ class SingleJobService(DBusObject):
         """
         Starts a job by name.
         """
+        self.policy.check(sender, conn)
         self.proxy.start_service(self.name)
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='',
@@ -48,6 +50,7 @@ class SingleJobService(DBusObject):
         """
         Stops a job by name.
         """
+        self.policy.check(sender, conn)
         self.proxy.stop_service(self.name)
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='a{s(ssss)}',
@@ -66,7 +69,8 @@ class SingleJobService(DBusObject):
             )
         }
         """
-        pass
+        self.policy.check(sender, conn)
+        # TODO
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='a{s(ssss)}', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
@@ -74,7 +78,8 @@ class SingleJobService(DBusObject):
         """
         Sets a job's settings.
         """
-        pass
+        self.policy.check(sender, conn)
+        # TODO
     
     def _load_properties(self):
         if not self._props:
