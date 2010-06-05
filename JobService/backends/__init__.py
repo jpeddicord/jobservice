@@ -12,14 +12,14 @@ class ServiceBase:
     
     def get_service(self, name):
         return {
-            'name': 'example-service',
-            'description': 'an example service',
-            'version': '0.1',
+            'name': 'undefined',
+            'description': 'service unknown',
+            'version': '0',
             'author': 'Nobody',
             'running': False,
             'automatic': False,
-            'starton': ['example-base', 2, 3],
-            'stopon': [0],
+            'starton': [''],
+            'stopon': [''],
         }
     
     def start_service(self, name):
