@@ -28,7 +28,7 @@ class Policy:
         # ask PolicyKit
         auth, challenge, details = self.pk.CheckAuthorization(
                 ('unix-process', {'pid': pid, 'start-time': 0}),
-                priv, {'': ''}, 1, '')
+                priv, {'': ''}, 1, '', timeout=500)
         if not auth:
             raise DeniedByPolicy('Not authorized to manage jobs.')
         
