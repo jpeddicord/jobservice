@@ -96,8 +96,7 @@ class ServiceBackend(ServiceBase):
             job_obj = self.bus.get_object('com.ubuntu.Upstart',
                     self.jobpaths[job_name])
             job = Interface(job_obj, 'com.ubuntu.Upstart0_6.Job')
-            # FIXME: for some reason, this doesn't actually do anything.
-            job.Start([''], False)
+            job.Start([], True)
         # one or more instances available
         else:
             for inst_path in self.instpaths[self.jobpaths[job_name]]:
