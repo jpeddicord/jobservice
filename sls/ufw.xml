@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <setting name="ipv6" type="bool">
+        <description>Use IPV6</description>
+        <file>/etc/default/ufw</file>
+        <parse>IPV6=%s</parse>
+        <values>
+            <value name="true">yes</value>
+            <value name="false">no</value>
+        </values>
+    </setting>
+    <setting name="default_input_policy" type="choice">
+        <description>Default inbound policy</description>
+        <file>/etc/default/ufw</file>
+        <parse>DEFAULT_INPUT_POLICY="%s"</parse>
+        <values>
+            <value name="drop" description="Drop">DROP</value>
+            <value name="accept" description="Accept">ACCEPT</value>
+            <value name="accept_no_track" description="Accept (no connection tracking)">ACCEPT_NO_TRACK</value>
+            <value name="reject" description="Reject">REJECT</value>
+        </values>
+    </setting>
+    <setting name="default_output_policy" type="choice">
+        <description>Default outbound policy</description>
+        <file>/etc/default/ufw</file>
+        <parse>DEFAULT_OUTPUT_POLICY="%s"</parse>
+        <values>
+            <value name="drop" description="Drop">DROP</value>
+            <value name="accept" description="Accept">ACCEPT</value>
+            <value name="accept_no_track" description="Accept (no connection tracking)">ACCEPT_NO_TRACK</value>
+            <value name="reject" description="Reject">REJECT</value>
+        </values>
+    </setting>
+</settings>

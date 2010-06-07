@@ -85,8 +85,6 @@ class ServiceBackend(ServiceBase):
             info['running'] = (inst_props['state'] == 'running')
         return props
     
-    def _get_startstop(self, name, start=True):
-        
-        def parse_paren(text):
-            pass
+    def start_service(self, name):
+        pass
     

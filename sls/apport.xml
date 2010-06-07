@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <setting name="enable" type="bool">
+        <description>Enable Apport</description>
+        <file>/etc/default/apport</file>
+        <parse>enabled=%s</parse>
+        <values>
+            <value name="true">1</value>
+            <value name="false">0</value>
+        </values>
+    </setting>
+</settings>

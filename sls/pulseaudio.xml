@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <setting name="system" type="bool">
+        <description>System mode</description>
+        <file>/etc/default/pulseaudio</file>
+        <parse>PULSEAUDIO_SYSTEM_START=%s</parse>
+        <values>
+            <value name="true">1</value>
+            <value name="false">0</value>
+        </values>
+    </setting>
+</settings>
