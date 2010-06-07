@@ -42,7 +42,6 @@ class SingleJobService(DBusObject):
         self.root.policy.check(sender, conn)
         self.root.proxy.start_service(self.name)
         self._props = {}
-        self.root.load_jobs()
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
@@ -53,7 +52,6 @@ class SingleJobService(DBusObject):
         self.root.policy.check(sender, conn)
         self.root.proxy.stop_service(self.name)
         self._props = {}
-        self.root.load_jobs()
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='a{s(ssss)}',
                 sender_keyword='sender', connection_keyword='conn')
