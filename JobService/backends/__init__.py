@@ -64,10 +64,10 @@ class ServiceProxy(ServiceBase):
         """
         Get all services from all backends.
         """
-        svclist = {}
+        svclist = []
         for bk in self.backends:
             self.backends[bk] = bk.get_all_services()
-            svclist.update(self.backends[bk])
+            svclist += self.backends[bk]
         return svclist
     
     def get_service(self, name):

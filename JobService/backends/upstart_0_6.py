@@ -20,7 +20,7 @@ class ServiceBackend(ServiceBase):
         )
     
     def get_all_services(self):
-        svclist = {}
+        svclist = []
         for path in self.upstart.GetAllJobs():
             job_obj = self.bus.get_object('com.ubuntu.Upstart', path)
             job_name = job_obj.Get('com.ubuntu.Upstart0_6.Job', 'name',
@@ -34,20 +34,17 @@ class ServiceBackend(ServiceBase):
                 for inst_path in instances:
                     self.instpaths[path].append(inst_path)
                     inst_obj = self.bus.get_object('com.ubuntu.Upstart',
-                                                   inst_path)
-                    inst_props = inst_obj.GetAll(
-                        'com.ubuntu.Upstart0_6.Instance',
-                        dbus_interface=PROPERTIES_IFACE
-                    )
-                    if inst_props['name']:
-                        list_name = job_name + '/' + inst_props['name']
+                            inst_path)
+                    inst_name = inst_obj.Get('com.ubuntu.Upstart0_6.Instance',
+                            'name', dbus_interface=PROPERTIES_IFACE)
+                    if inst_name:
+                        svclist.append(job_name + '/' + inst_name)
                     # if there is no instance name, there's probably only one
                     else:
-                        list_name = job_name
-                    svclist[list_name] = (inst_props['state'] == 'running')
+                        svclist.append(job_name)
             # no running instances
             else:
-                svclist[job_name] = False
+                svclist.append(job_name)
         return svclist
     
     def get_service(self, name):
@@ -55,13 +52,12 @@ class ServiceBackend(ServiceBase):
         info = {
             'running': False,
             'automatic': False,
-            'starton': [],
-            'stopon': []
+            'starton': [''],
+            'stopon': ['']
         }
         # get the job name if we're an instance
         if '/' in name:
-            job_name = name[:name.index('/')]
-            inst_name = name[name.index('/')+1:]
+            job_name, inst_name = name.split('/')
         else:
             job_name = name
             inst_name = None
@@ -77,14 +73,45 @@ class ServiceBackend(ServiceBase):
                 'com.ubuntu.Upstart0_6.Instance',
                 dbus_interface=PROPERTIES_IFACE
             )
+            info['running'] = (inst_props['state'] == 'running')
             # we've found our (named) instance
             if inst_props['name'] == inst_name:
                 info['running'] = (inst_props['state'] == 'running')
                 break
-            # fall back on any available instance
-            info['running'] = (inst_props['state'] == 'running')
-        return props
+        info.update(props)
+        return info
     
     def start_service(self, name):
-        pass
+        """
+        If a job is given, try to start it's instance first if it has one.
+        If it doesn't have one, start via job.
+        If an instance is given, start it directly.
+        """
+        if '/' in name:
+            job_name, inst_name = name.split('/')
+        else:
+            job_name = name
+            inst_name = None
+        
     
+    def stop_service(self, name):
+        """
+        Find the appropritate job instance (named, if available) and stop it.
+        """
+        if '/' in name:
+            job_name, inst_name = name.split('/')
+        else:
+            job_name = name
+            inst_name = None
+        for inst_path in self.instpaths[self.jobpaths[job_name]]:
+            inst_obj = self.bus.get_object('com.ubuntu.Upstart', inst_path)
+            inst_props = inst_obj.GetAll(
+                'com.ubuntu.Upstart0_6.Instance',
+                dbus_interface=PROPERTIES_IFACE
+            )
+            if inst_props['name'] == inst_name:
+                break
+        # at this point we should have the inst_obj we need
+        inst_obj.Stop(False, dbus_interface='com.ubuntu.Upstart0_6.Instance')
+        # reload all jobs to fetch new states
+        self.get_all_services()

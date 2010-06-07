@@ -24,19 +24,15 @@ class RootJobService(DBusObject):
         self.proxy = ServiceProxy()
         self.jobs = []
         
-        # create an object for each available job
-        for job, running in self.proxy.get_all_services().iteritems():
+        for job in self.proxy.get_all_services():
             self.jobs.append(SingleJobService(
                 conn,
                 '%s/%s' % (DBUS_PATH, dbus_safe_name(job)),
                 name=job,
-                proxy=self.proxy,
-                running=running,
-                policy=self.policy
+                root=self
             ))
         
-    
-    @DBusMethod(DBUS_IFACE, in_signature='', out_signature='a(sob)',
+    @DBusMethod(DBUS_IFACE, in_signature='', out_signature='a(so)',
                 sender_keyword='sender', connection_keyword='conn')
     def GetAllJobs(self, sender=None, conn=None):
         """
@@ -45,16 +41,11 @@ class RootJobService(DBusObject):
         Returns array of struct (
             string name
             object path
-            boolean running
         )
         """
         svclist = []
         for job in self.jobs:
-            svclist.append((
-                job.name,
-                job.path,
-                job.running
-            ))
+            svclist.append((job.name, job.path))
         return svclist
     
 

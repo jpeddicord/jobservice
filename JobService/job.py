@@ -9,13 +9,11 @@ class SingleJobService(DBusObject):
     Exports a single job as its own object on our bus.
     """
     
-    def __init__(self, conn=None, object_path=None, bus_name=None, name=None, proxy=None, running=False, policy=None):
+    def __init__(self, conn=None, object_path=None, bus_name=None, name=None, root=None):
         DBusObject.__init__(self, conn, object_path, bus_name)
         
         self.name = name
-        self.proxy = proxy
-        self.running = running
-        self.policy = policy
+        self.root = root
         self.path = self.__dbus_object_path__
         self._props = {}
     
@@ -41,8 +39,10 @@ class SingleJobService(DBusObject):
         """
         Starts a job by name.
         """
-        self.policy.check(sender, conn)
-        self.proxy.start_service(self.name)
+        self.root.policy.check(sender, conn)
+        self.root.proxy.start_service(self.name)
+        self._props = {}
+        self.root.load_jobs()
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
@@ -50,8 +50,10 @@ class SingleJobService(DBusObject):
         """
         Stops a job by name.
         """
-        self.policy.check(sender, conn)
-        self.proxy.stop_service(self.name)
+        self.root.policy.check(sender, conn)
+        self.root.proxy.stop_service(self.name)
+        self._props = {}
+        self.root.load_jobs()
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='a{s(ssss)}',
                 sender_keyword='sender', connection_keyword='conn')
@@ -69,7 +71,7 @@ class SingleJobService(DBusObject):
             )
         }
         """
-        self.policy.check(sender, conn)
+        self.root.policy.check(sender, conn)
         # TODO
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='a{s(ssss)}', out_signature='',
@@ -78,10 +80,10 @@ class SingleJobService(DBusObject):
         """
         Sets a job's settings.
         """
-        self.policy.check(sender, conn)
+        self.root.policy.check(sender, conn)
         # TODO
     
     def _load_properties(self):
         if not self._props:
-            self._props = self.proxy.get_service(self.name)
+            self._props = self.root.proxy.get_service(self.name)
         
