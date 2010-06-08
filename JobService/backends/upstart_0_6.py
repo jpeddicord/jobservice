@@ -5,8 +5,6 @@ from JobService.backends import ServiceBase
 
 class ServiceBackend(ServiceBase):
     
-    backend_name = "Upstart 0.6"
-        
     def __init__(self):
         """
         Connect to Upstart's dbus service.

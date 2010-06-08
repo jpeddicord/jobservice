@@ -5,8 +5,6 @@ from subprocess import Popen, PIPE
 
 class ServiceBase:
     
-    backend_name = "Undefined"
-        
     def get_all_services(self):
         return []
     
@@ -77,7 +75,7 @@ class ServiceProxy(ServiceBase):
         for bk in self.backends:
             # check backend lists for services
             if name in self.backends[bk]:
-                info = {'backend': bk.backend_name}
+                info = {'backend': bk.__module__[bk.__module__.rfind('.')+1:]}
                 info.update(bk.get_service(name))
                 return info
     

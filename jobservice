@@ -20,7 +20,11 @@ class RootJobService(DBusObject):
         """
         DBusObject.__init__(self, conn, object_path, bus_name)
         
-        self.policy = Policy()
+        enforce = True
+        if len(sys.argv) > 1 and sys.argv[1] == 'noenforce':
+            enforce = False
+        
+        self.policy = Policy(enforce)
         self.proxy = ServiceProxy()
         self.jobs = []
         
