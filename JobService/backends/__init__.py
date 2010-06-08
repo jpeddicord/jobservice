@@ -1,6 +1,7 @@
 
 from re import search
 from subprocess import Popen, PIPE
+from dbus import Array
 
 
 class ServiceBase:
@@ -16,8 +17,8 @@ class ServiceBase:
             'author': 'Nobody',
             'running': False,
             'automatic': False,
-            'starton': [''],
-            'stopon': [''],
+            'starton': Array(signature='s'),
+            'stopon': Array(signature='s'),
         }
     
     def start_service(self, name):

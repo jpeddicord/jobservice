@@ -50,8 +50,8 @@ class ServiceBackend(ServiceBase):
         info = {
             'running': False,
             'automatic': False,
-            'starton': [''],
-            'stopon': ['']
+            'starton': Array(signature='s'),
+            'stopon': Array(signature='s'),
         }
         # get the job name if we're an instance
         if '/' in name:

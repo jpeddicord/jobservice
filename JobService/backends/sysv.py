@@ -1,5 +1,5 @@
 
-from dbus import SystemBus, Interface
+from dbus import SystemBus, Interface, Array
 from JobService.backends import ServiceBase
 
 
@@ -43,8 +43,8 @@ class ServiceBackend(ServiceBase):
             'author': '',
             'running': False,
             'automatic': False,
-            'starton': [''],
-            'stopon': ['']
+            'starton': Array(signature='s'),
+            'stopon': Array(signature='s'),
         }
         props = self._get_lsb_properties(name)
         if 'Short-Description' in props:
