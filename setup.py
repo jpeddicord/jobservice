@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
+from os import listdir
 from distutils.core import setup
+
 
 setup_info = dict(
     name='jobservice',
@@ -13,8 +15,9 @@ setup_info = dict(
     scripts=['jobservice'],
     data_files=[
         ('share/dbus-1/system-services/', ['com.ubuntu.JobService.service']),
-        ('/etc/dbus-1/system.d/', ['com.ubuntu.JobService.conf'])
-        ('share/polkit-1/actions', ['com.ubuntu.jobservice.policy']),
+        ('/etc/dbus-1/system.d/', ['com.ubuntu.JobService.conf']),
+        ('share/polkit-1/actions/', ['com.ubuntu.jobservice.policy']),
+        ('share/jobservice/sls/', ['sls/%s' % x for x in listdir('sls')]),
     ],
 )
 
