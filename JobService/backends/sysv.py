@@ -14,10 +14,17 @@ class ServiceBackend(ServiceBase):
         self.services = {}
         
         self.bus = SystemBus()
-        self.stb = Interface(
+        self.sconfig = Interface(
             self.bus.get_object(
                 'org.freedesktop.SystemToolsBackends.ServicesConfig',
                 '/org/freedesktop/SystemToolsBackends/ServicesConfig'
+            ),
+            'org.freedesktop.SystemToolsBackends'
+        )
+        self.sconfig2 = Interface(
+            self.bus.get_object(
+                'org.freedesktop.SystemToolsBackends.ServiceConfig2',
+                '/org/freedesktop/SystemToolsBackends/ServiceConfig2'
             ),
             'org.freedesktop.SystemToolsBackends'
         )
@@ -29,7 +36,7 @@ class ServiceBackend(ServiceBase):
         but if it crashed or was stopped then we don't know.
         """
         svclist = []
-        self.runlevels, self.active_runlevel, services = self.stb.get()
+        self.runlevels, self.active_runlevel, services = self.sconfig.get()
         for name, runlevels in services:
             self.services[name] = runlevels
             svclist.append(name)
@@ -59,6 +66,25 @@ class ServiceBackend(ServiceBase):
             else:
                 info['starton'].append(runlevel)
         return info
+    
+    def start_service(self, name):
+        self._change_service_state(name, True)
+    
+    def stop_service(self, name):
+        self._change_service_state(name, False)
+    
+    def _change_service_state(self, name, auto):
+        """
+        Set a service's stopped state in s-t-b.
+        """
+        runlevels = []
+        for runlevel, stopped, priority in self.services[name]:
+            if runlevel == self.active_runlevel:
+                stopped = False if auto else True
+            runlevels.append((runlevel, stopped, priority))
+        service_obj = (name, runlevels)
+        self.sconfig2.set(service_obj)
+        self.get_all_services() # reload our cache
         
     def _get_lsb_properties(self, name):
         """
