@@ -39,7 +39,8 @@ class ServiceBackend(ServiceBase):
         self.runlevels, self.active_runlevel, services = self.sconfig.get()
         for name, runlevels in services:
             self.services[name] = runlevels
-            svclist.append(name)
+            if runlevels:
+                svclist.append(name)
         return svclist
     
     def get_service(self, name):

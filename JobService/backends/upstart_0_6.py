@@ -64,7 +64,13 @@ class ServiceBackend(ServiceBase):
                 self.jobpaths[job_name])
         props = job_obj.GetAll('com.ubuntu.Upstart0_6.Job',
                 dbus_interface=PROPERTIES_IFACE)
-        # TODO: automatic, starton, stopon
+        # TODO: automatic
+        # starton/stopon
+        conf = open('/etc/init/%s.conf' % job_name, 'r')
+        starton = self._parse_conf(conf, 'start on')
+        stopon = self._parse_conf(conf, 'stop on')
+        info['starton'] += self._extract_events(starton)
+        info['stopon'] += self._extract_events(stopon)
         # running state: check the instance(s)
         for inst_path in self.instpaths[self.jobpaths[job_name]]:
             inst_obj = self.bus.get_object('com.ubuntu.Upstart', inst_path)
@@ -126,3 +132,37 @@ class ServiceBackend(ServiceBase):
         inst_obj.Stop(True, dbus_interface='com.ubuntu.Upstart0_6.Instance')
         # reload
         self.get_all_services()
+    
+    def _parse_conf(self, conf, find):
+        """
+        Parse file 'conf' for text 'find' and return the value.
+        Useful for grabbing the full contents of a start/stop on line.
+        """
+        conf.seek(0)
+        reading = False
+        data = ""
+        paren = 0
+        for line in conf:
+            if line.find(find) == 0:
+                reading = True
+            if reading:
+                data += line
+                paren += line.count('(') - line.count(')')
+                if not paren:
+                    break
+        return data
+    
+    def _extract_events(self, data):
+        """
+        Grab events present in a text string (ie, a start/stop on line).
+        An event could be a runlevel or a starting/stopping string.
+        """
+        events = []
+        keywords = ('starting', 'stopping', 'started', 'stopped', 'runlevel')
+        words = [d.strip(' ()') for d in data.split()]
+        i = 0
+        for w in words:
+            if w in keywords:
+                events.append('%s %s' % (w, words[i+1]))
+            i += 1
+        return events
