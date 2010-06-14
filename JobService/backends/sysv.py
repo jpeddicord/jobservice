@@ -94,7 +94,7 @@ class ServiceBackend(ServiceBase):
         """
         props = {}
         try:
-            entry = open('/etc/init.d/%s' % name, 'r')
+            entry = open('/etc/init.d/{0}'.format(name), 'r')
         except IOError: return props
         parsing = False
         for line in entry:

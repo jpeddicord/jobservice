@@ -54,7 +54,7 @@ class ServiceProxy(ServiceBase):
         
         # load the backends
         for mod in load:
-            newmod = __import__('JobService.backends.%s' % mod,
+            newmod = __import__('JobService.backends.{0}'.format(mod),
                                 fromlist=['ServiceBackend'])
             newbackend = newmod.ServiceBackend()
             self.backends[newbackend] = []

@@ -66,7 +66,7 @@ class ServiceBackend(ServiceBase):
                 dbus_interface=PROPERTIES_IFACE)
         # TODO: automatic
         # starton/stopon
-        conf = open('/etc/init/%s.conf' % job_name, 'r')
+        conf = open('/etc/init/{0}.conf'.format(job_name), 'r')
         starton = self._parse_conf(conf, 'start on')
         stopon = self._parse_conf(conf, 'stop on')
         info['starton'] += self._extract_events(starton)
@@ -166,10 +166,10 @@ class ServiceBackend(ServiceBase):
                 if w == 'runlevel':
                     levels = words[i+1].strip('[]')
                     if levels[0] == '!':
-                        events.append('not runlevels %s' % ' '.join(levels[1:]))
+                        events.append('not runlevels {0}'.format(' '.join(levels[1:])))
                     else:
-                        events.append('runlevels %s' % ' '.join(levels))
+                        events.append('runlevels {0}'.format(' '.join(levels)))
                 else:
-                    events.append('%s %s' % (w, words[i+1]))
+                    events.append('{0} {1}'.format(w, words[i+1]))
             i += 1
         return events
