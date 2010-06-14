@@ -64,13 +64,14 @@ class ServiceBackend(ServiceBase):
                 self.jobpaths[job_name])
         props = job_obj.GetAll('com.ubuntu.Upstart0_6.Job',
                 dbus_interface=PROPERTIES_IFACE)
-        # TODO: automatic
         # starton/stopon
         conf = open('/etc/init/{0}.conf'.format(job_name), 'r')
         starton = self._parse_conf(conf, 'start on')
         stopon = self._parse_conf(conf, 'stop on')
         info['starton'] += self._extract_events(starton)
         info['stopon'] += self._extract_events(stopon)
+        # automatic if starton isn't commented out
+        info['automatic'] = (starton[0] != '#')
         # running state: check the instance(s)
         for inst_path in self.instpaths[self.jobpaths[job_name]]:
             inst_obj = self.bus.get_object('com.ubuntu.Upstart', inst_path)
@@ -143,7 +144,9 @@ class ServiceBackend(ServiceBase):
         data = ""
         paren = 0
         for line in conf:
-            if line.find(find) == 0:
+            # could be at pos 1 or 2 if line is commented out
+            pos = line.find(find)
+            if pos >= 0 and pos <= 2:
                 reading = True
             if reading:
                 data += line
