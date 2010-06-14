@@ -163,6 +163,13 @@ class ServiceBackend(ServiceBase):
         i = 0
         for w in words:
             if w in keywords:
-                events.append('%s %s' % (w, words[i+1]))
+                if w == 'runlevel':
+                    levels = words[i+1].strip('[]')
+                    if levels[0] == '!':
+                        events.append('not runlevels %s' % ' '.join(levels[1:]))
+                    else:
+                        events.append('runlevels %s' % ' '.join(levels))
+                else:
+                    events.append('%s %s' % (w, words[i+1]))
             i += 1
         return events
