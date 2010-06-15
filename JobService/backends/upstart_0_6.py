@@ -1,4 +1,5 @@
 
+from os import rename
 from dbus import SystemBus, Interface, PROPERTIES_IFACE, Array
 from JobService.backends import ServiceBase
 
@@ -65,13 +66,13 @@ class ServiceBackend(ServiceBase):
         props = job_obj.GetAll('com.ubuntu.Upstart0_6.Job',
                 dbus_interface=PROPERTIES_IFACE)
         # starton/stopon
-        conf = open('/etc/init/{0}.conf'.format(job_name), 'r')
-        starton = self._parse_conf(conf, 'start on')
-        stopon = self._parse_conf(conf, 'stop on')
-        info['starton'] += self._extract_events(starton)
-        info['stopon'] += self._extract_events(stopon)
-        # automatic if starton isn't commented out
-        info['automatic'] = (starton[0] != '#')
+        with open('/etc/init/{0}.conf'.format(job_name), 'r') as conf:
+            starton = self._parse_conf(conf, 'start on')
+            stopon = self._parse_conf(conf, 'stop on')
+            info['starton'] += self._extract_events(starton)
+            info['stopon'] += self._extract_events(stopon)
+            # automatic if starton isn't commented out
+            info['automatic'] = (starton[0] != '#')
         # running state: check the instance(s)
         for inst_path in self.instpaths[self.jobpaths[job_name]]:
             inst_obj = self.bus.get_object('com.ubuntu.Upstart', inst_path)
@@ -112,6 +113,9 @@ class ServiceBackend(ServiceBase):
                 if inst_props['name'] == inst_name:
                     break
             inst_obj.Start(True, dbus_interface='com.ubuntu.Upstart0_6.Instance')
+        # update config
+        with open('/etc/init/{0}.conf'.format(job_name), 'r') as conf:
+           self._set_automatic(conf, True)
         # reload
         self.get_all_services()
         
@@ -131,9 +135,37 @@ class ServiceBackend(ServiceBase):
             if inst_props['name'] == inst_name:
                 break
         inst_obj.Stop(True, dbus_interface='com.ubuntu.Upstart0_6.Instance')
+        # update config
+        with open('/etc/init/{0}.conf'.format(job_name), 'r') as conf:
+           self._set_automatic(conf, False)
         # reload
         self.get_all_services()
     
+    def _set_automatic(self, conf, automatic=True):
+        """
+        Comment/uncomment a job conf file's start on line.
+        Closes conf.
+        """
+        newname = '{0}.new'.format(conf.name)
+        with open(newname, 'w') as new:
+            for line in conf:
+                # if we find a start on line
+                pos = line.find('start on')
+                if pos >= 0 and pos <= 2:
+                    starton = '\n' + self._parse_conf(conf, 'start on')
+                    # enabling
+                    if automatic:
+                        starton = starton.rstrip().replace('\n#', '\n')
+                    # disabling
+                    else:
+                        starton = starton.rstrip().replace('\n', '\n#')
+                    new.write(starton.lstrip() + '\n')
+                    continue
+                new.write(line)
+        conf.close()
+        rename(conf.name, '{0}~'.format(conf.name))
+        rename(newname, conf.name)
+        
     def _parse_conf(self, conf, find):
         """
         Parse file 'conf' for text 'find' and return the value.
