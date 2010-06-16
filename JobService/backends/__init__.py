@@ -42,7 +42,7 @@ class ServiceProxy(ServiceBase):
         load = ['sysv']
         
         # check for upstart
-        p = Popen(['init', '--version'], stdout=PIPE)
+        p = Popen(['/sbin/init', '--version'], stdout=PIPE)
         out = p.stdout.read()
         
         match = search('upstart (\d+\.\d+)', out)
