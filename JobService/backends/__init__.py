@@ -39,7 +39,7 @@ class ServiceProxy(ServiceBase):
         Load the appropriate backends for the current system.
         """
         self.backends = {}
-        load = ['sysv']
+        load = ['sysv_stb']
         
         # check for upstart
         p = Popen(['/sbin/init', '--version'], stdout=PIPE)
