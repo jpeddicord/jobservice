@@ -1,5 +1,6 @@
 
 from dbus import SystemBus, Interface, Array
+from dbus.exceptions import DBusException
 from JobService.backends import ServiceBase
 
 
@@ -14,6 +15,9 @@ class ServiceBackend(ServiceBase):
         self.services = {}
         
         self.bus = SystemBus()
+        self._connect()
+    
+    def _connect(self):
         self.sconfig = Interface(
             self.bus.get_object(
                 'org.freedesktop.SystemToolsBackends.ServicesConfig',
@@ -36,7 +40,11 @@ class ServiceBackend(ServiceBase):
         but if it crashed or was stopped then we don't know.
         """
         svclist = []
-        self.runlevels, self.active_runlevel, services = self.sconfig.get()
+        try:
+            self.runlevels, self.active_runlevel, services = self.sconfig.get()
+        except DBusException:
+            self._connect()
+            self.runlevels, self.active_runlevel, services = self.sconfig.get()
         for name, runlevels in services:
             self.services[name] = runlevels
             if runlevels:
@@ -84,7 +92,11 @@ class ServiceBackend(ServiceBase):
                 stopped = False if auto else True
             runlevels.append((runlevel, stopped, priority))
         service_obj = (name, runlevels)
-        self.sconfig2.set(service_obj)
+        try:
+            self.sconfig2.set(service_obj)
+        except DBusException:
+            self._connect()
+            self.sconfig2.set(service_obj)
         self.get_all_services() # reload our cache
         
     def _get_lsb_properties(self, name):
