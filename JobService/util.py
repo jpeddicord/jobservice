@@ -1,4 +1,29 @@
 
+from time import time
+from glib import timeout_add_seconds
+
+class IdleTimeout:
+    """
+    Keeps track of the time since last use.
+    If idle for too long, quit.
+    """
+    
+    def __init__(self, loop, idlemax):
+        self.loop = loop
+        self.idlemax = idlemax
+        self.lastused = time()
+        self.timeout = timeout_add_seconds(idlemax, self.callback)
+        
+    def callback(self):
+        now = time()
+        # we were left idle, time to quit
+        if now - self.lastused > self.idlemax:
+            self.loop.quit()
+            return False
+        return True
+    
+    def ping(self):
+        self.lastused = time()
 
 def dbus_safe_name(unsafe):
     """
@@ -12,3 +37,5 @@ def dbus_safe_name(unsafe):
         else:
             safe += '_{0:02x}'.format(ord(ch))
     return safe
+
+

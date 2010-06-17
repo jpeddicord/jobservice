@@ -19,6 +19,7 @@ class SingleJobService(DBusObject):
     
     @DBusMethod(PROPERTIES_IFACE, in_signature='s', out_signature='a{sv}')
     def GetAll(self, interface):
+        self.root.idle.ping()
         if interface == DBUS_JOB_IFACE:
             self._load_properties()
             return self._props
@@ -27,6 +28,7 @@ class SingleJobService(DBusObject):
             
     @DBusMethod(PROPERTIES_IFACE, in_signature='ss', out_signature='v')
     def Get(self, interface, prop):
+        self.root.idle.ping()
         if interface == DBUS_JOB_IFACE:
             self._load_properties()
             return self._props[prop]
@@ -39,6 +41,7 @@ class SingleJobService(DBusObject):
         """
         Starts a job by name.
         """
+        self.root.idle.ping()
         self.root.policy.check(sender, conn)
         self.root.proxy.start_service(self.name)
         self._props = {}
@@ -49,6 +52,7 @@ class SingleJobService(DBusObject):
         """
         Stops a job by name.
         """
+        self.root.idle.ping()
         self.root.policy.check(sender, conn)
         self.root.proxy.stop_service(self.name)
         self._props = {}
@@ -69,6 +73,7 @@ class SingleJobService(DBusObject):
             )
         }
         """
+        self.root.idle.ping()
         self.root.policy.check(sender, conn)
         # TODO
     
@@ -78,6 +83,7 @@ class SingleJobService(DBusObject):
         """
         Sets a job's settings.
         """
+        self.root.idle.ping()
         self.root.policy.check(sender, conn)
         # TODO
     

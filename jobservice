@@ -8,13 +8,13 @@ from dbus.mainloop.glib import DBusGMainLoop
 from JobService import DBUS_IFACE, DBUS_PATH
 from JobService.backends import ServiceProxy
 from JobService.job import SingleJobService
-from JobService.util import dbus_safe_name
+from JobService.util import IdleTimeout, dbus_safe_name
 from JobService.policy import Policy
 
 
 class RootJobService(DBusObject):
 
-    def __init__(self, conn=None, object_path=None, bus_name=None):
+    def __init__(self, conn=None, object_path=None, bus_name=None, idle=None):
         """
         Fire up this service as well as all of the paths for individual jobs.
         """
@@ -24,6 +24,7 @@ class RootJobService(DBusObject):
         if len(sys.argv) > 1 and sys.argv[1] == 'noenforce':
             enforce = False
         
+        self.idle = idle
         self.policy = Policy(enforce)
         self.proxy = ServiceProxy()
         self.jobs = []
@@ -47,19 +48,20 @@ class RootJobService(DBusObject):
             object path
         )
         """
+        self.idle.ping()
         svclist = []
         for job in self.jobs:
             svclist.append((job.name, job.path))
         return svclist
-    
 
 if __name__ == '__main__':
     DBusGMainLoop(set_as_default=True)
     threads_init()
-
+    
+    loop = MainLoop()
     srv = RootJobService(
         BusName('com.ubuntu.JobService', bus=SystemBus()),
-        DBUS_PATH
+        DBUS_PATH,
+        idle=IdleTimeout(loop, 100)
     )
-    srv.loop = MainLoop()
-    srv.loop.run()
+    loop.run()
