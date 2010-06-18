@@ -35,7 +35,7 @@ class ServiceBackend(ServiceBase):
     
     def get_all_services(self):
         """
-        Return our list of services and states.
+        Return our list of services.
         We guess at a service's state by seeing if it _should_ be running,
         but if it crashed or was stopped then we don't know.
         """

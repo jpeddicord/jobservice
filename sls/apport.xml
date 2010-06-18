@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
     <setting name="enable" type="bool">
-        <description>Enable Apport</description>
+        <description>Enable crash reporting</description>
         <file>/etc/default/apport</file>
         <parse>enabled=%s</parse>
         <values>

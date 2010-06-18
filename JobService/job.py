@@ -57,27 +57,30 @@ class SingleJobService(DBusObject):
         self.root.proxy.stop_service(self.name)
         self._props = {}
     
-    @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='a{s(ssss)}',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='a{s(sssa(ss))}',
                 sender_keyword='sender', connection_keyword='conn')
     def GetSettings(self, sender=None, conn=None):
         """
         Returns a job's available settings and constraints.
         
-        Returns dict {
+        Returns dict settings {
             key: string setting-name
             value: struct (
-                string name
-                string description
-                string value
                 string type
+                string description
+                string current-value
+                list of struct values (
+                    string name
+                    string description
+                )
             )
         }
         """
         self.root.idle.ping()
         self.root.policy.check(sender, conn)
-        # TODO
+        return self.root.proxy.get_service_settings(self.name)
     
-    @DBusMethod(DBUS_JOB_IFACE, in_signature='a{s(ssss)}', out_signature='',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
     def SetSettings(self, settings, sender=None, conn=None):
         """

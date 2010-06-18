@@ -2,6 +2,7 @@
 from re import search
 from subprocess import Popen, PIPE
 from dbus import Array
+from JobService.settings import ServiceSettings
 
 
 class ServiceBase:
@@ -39,6 +40,7 @@ class ServiceProxy(ServiceBase):
         Load the appropriate backends for the current system.
         """
         self.backends = {}
+        self.sls = {}
         load = ['sysv_stb']
         
         # check for upstart
@@ -60,23 +62,23 @@ class ServiceProxy(ServiceBase):
             self.backends[newbackend] = []
         
     def get_all_services(self):
-        """
-        Get all services from all backends.
-        """
         svclist = []
+        # get the services
         for bk in self.backends:
             self.backends[bk] = bk.get_all_services()
             svclist += self.backends[bk]
+        # initalize setting backends
+        for svc in svclist:
+            try:
+                self.sls[svc] = ServiceSettings(svc)
+            except: pass
         return svclist
     
     def get_service(self, name):
-        """
-        Get a single service from the appropriate backend.
-        """
         for bk in self.backends:
-            # check backend lists for services
             if name in self.backends[bk]:
-                info = {'backend': bk.__module__[bk.__module__.rfind('.')+1:]}
+                info = {'backend': bk.__module__[bk.__module__.rfind('.')+1:],
+                        'settings': name in self.sls}
                 info.update(bk.get_service(name))
                 return info
     
@@ -89,4 +91,15 @@ class ServiceProxy(ServiceBase):
         for bk in self.backends:
             if name in self.backends[bk]:
                 bk.stop_service(name)
-                    
+    
+    def get_service_settings(self, name):
+        settings = {}
+        if name in self.sls:
+            for sname in self.sls[name].get_all_settings():
+                settings[sname] = self.sls[name].get_setting(sname)
+        return settings
+        #TODO: query the backends for additional settings
+    
+    def set_service_settings(self, name):
+        pass #TODO
+    
