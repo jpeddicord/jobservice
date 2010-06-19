@@ -1,6 +1,6 @@
 
 from os.path import exists
-from xml.dom.minidom import parse
+from xml.etree.cElementTree import ElementTree
 
 SLS_SYSTEM = '/usr/share/jobservice/sls/{0}.xml'
 SLS_LOCAL = 'sls/{0}.xml'
@@ -16,17 +16,18 @@ class ServiceSettings:
         self.filename = SLS_SYSTEM.format(jobname)
         if not exists(self.filename):
             self.filename = SLS_LOCAL.format(jobname)
-        self.dom = parse(self.filename)
-        self.setting_nodes = {}
+        self.tree = ElementTree()
+        self.tree.parse(self.filename)
+        self.selements = {}
     
     def get_all_settings(self):
         """
         Return a list of setting names available on this service.
         """
         lst = []
-        for s in self.dom.getElementsByTagName('setting'):
-            name = s.getAttribute('name')
-            self.setting_nodes[name] = s
+        for e in self.tree.findall('setting'):
+            name = e.get('name')
+            self.selements[name] = e
             lst.append(name)
         return lst
     
@@ -35,16 +36,34 @@ class ServiceSettings:
         Return details of a specific setting by name in the format
         (type, description, current value, possible values)
         """
-        node = self.setting_nodes[name]
-        current = "" #TODO
+        ele = self.selements[name]
+        raw = self._get_raw_value(ele)
         # get available values
         values = []
-        for v in node.getElementsByTagName('value'):
-            values.append((v.getAttribute('name'),
-                    v.getAttribute('description')))
-        return (node.getAttribute('type'),
-                node.getElementsByTagName('description')[0].firstChild.nodeValue,
-                current, values)
+        current = raw
+        for v in ele.findall('values/value'):
+            values.append((v.get('name'), v.get('description', '')))
+            if v.text == raw:
+                current = v.get('name')
+        print current
+        return (ele.get('type'), ele.findtext('description'), current, values)
     
     def set_values(self, name, values):
         pass
+    
+    def _get_raw_value(self, ele):
+        before, after = ele.findtext('parse').strip().split('%s')
+        value = False
+        with open(ele.findtext('file')) as f:
+            for line in f:
+                beforepos = line.find(before)
+                # the second check is to make sure this is the right line,
+                # but we only perform it if we _might_ have it for speed.
+                if beforepos >= 0 and line.strip().find(before) == 0:
+                    start = beforepos + len(before)
+                    if after:
+                        value = line[start:line.find(after, start)]
+                    else:
+                        value = line[start:len(line)-1] # \n at the end
+                    break
+        return value
