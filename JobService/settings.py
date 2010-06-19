@@ -45,7 +45,6 @@ class ServiceSettings:
             values.append((v.get('name'), v.get('description', '')))
             if v.text == raw:
                 current = v.get('name')
-        print current
         return (ele.get('type'), ele.findtext('description'), current, values)
     
     def set_values(self, name, values):
