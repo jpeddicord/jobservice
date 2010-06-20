@@ -1,14 +1,18 @@
-<!-- Service-Level Settings DTD -->
+<!-- Service-Level Settings DTD 0.2 -->
 <!-- Distributed under the license of the jobservice project. -->
 
 <!ELEMENT settings (setting+)>
-<!ELEMENT setting (description, file, parse, values?)>
+<!ELEMENT setting (description, files, values?)>
 <!ATTLIST setting name CDATA #REQUIRED>
 <!ATTLIST setting type (bool|int|float|str|choice|file|dir) #REQUIRED>
 
 <!ELEMENT description (#PCDATA)>
-<!ELEMENT file (#PCDATA)>
+
+<!ELEMENT files (file+)>
+<!ELEMENT file (parse+)>
+<!ATTLIST file name CDATA #REQUIRED>
 <!ELEMENT parse (#PCDATA)>
+<!ATTLIST parse regex (true|false) "false">
 
 <!ELEMENT values (value+)>
 <!ELEMENT value (#PCDATA)>
