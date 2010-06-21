@@ -1,4 +1,5 @@
 
+from os import rename
 from os.path import exists
 from xml.etree.cElementTree import ElementTree
 
@@ -19,6 +20,7 @@ class ServiceSettings:
         self.tree = ElementTree()
         self.tree.parse(self.filename)
         self.selements = {}
+        self.settings = {}
     
     def get_all_settings(self):
         """
@@ -37,32 +39,61 @@ class ServiceSettings:
         (type, description, current value, possible values)
         """
         ele = self.selements[name]
-        raw = self._get_raw_value(ele)
+        with open(ele.findtext('file')) as f:
+            raw = self._raw_value(ele.findtext('parse'), f)
         # get available values
         values = []
-        current = raw
+        self.settings[name] = raw
         for v in ele.findall('values/value'):
             values.append((v.get('name'), v.get('description', '')))
             if v.text == raw:
-                current = v.get('name')
-        return (ele.get('type'), ele.findtext('description'), current, values)
+                self.settings[name] = v.get('name')
+        return (ele.get('type'), ele.findtext('description'),
+                self.settings[name], values)
     
-    def set_values(self, name, values):
-        pass
+    def set_setting(self, name, value):
+        ele = self.selements[name]
+        # translate the value into something for the file
+        newval = value
+        for v in ele.findall('values/value'):
+            if v.get('name') == value:
+                newval = v.text
+                break
+        filename = ele.findtext('file')
+        # write the new values
+        read = open(filename)
+        write = open('{0}.new'.format(filename), 'w')
+        self._raw_value(ele.findtext('parse'), read, write, newval)
+        write.close()
+        read.close()
+        # replace the original with backup
+        rename(read.name, '{0}~'.format(read.name))
+        rename(write.name, read.name)
     
-    def _get_raw_value(self, ele):
-        before, after = ele.findtext('parse').strip().split('%s')
+    def _raw_value(self, parse, read, write=None, newval=None):
+        """
+        Read or write (if write is not None) a raw value to a conf file.
+        read & write are file objects.
+        """
+        before, after = parse.strip().split('%s')
         value = False
-        with open(ele.findtext('file')) as f:
-            for line in f:
-                beforepos = line.find(before)
-                # the second check is to make sure this is the right line,
-                # but we only perform it if we _might_ have it for speed.
-                if beforepos >= 0 and line.strip().find(before) == 0:
+        
+        for line in read:
+            beforepos = line.find(before)
+            # the second check is to make sure this is the right line,
+            # but we only perform it if we _might_ have it for speed.
+            if beforepos >= 0 and line.strip().find(before) == 0:
+                if write:
+                    write.write(''.join((line[:beforepos],
+                            before, newval, after, '\n')))
+                else:
                     start = beforepos + len(before)
                     if after:
                         value = line[start:line.find(after, start)]
                     else:
                         value = line[start:len(line)-1] # \n at the end
-                    break
-        return value
+                    return value
+                continue
+            if write:
+                write.write(line)
+        

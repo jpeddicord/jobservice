@@ -80,7 +80,7 @@ class SingleJobService(DBusObject):
         self.root.policy.check(sender, conn)
         return self.root.proxy.get_service_settings(self.name)
     
-    @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='a{ss}', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
     def SetSettings(self, settings, sender=None, conn=None):
         """
@@ -88,7 +88,7 @@ class SingleJobService(DBusObject):
         """
         self.root.idle.ping()
         self.root.policy.check(sender, conn)
-        # TODO
+        self.root.proxy.set_service_settings(self.name, settings)
     
     def _load_properties(self):
         if not self._props:

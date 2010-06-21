@@ -100,6 +100,9 @@ class ServiceProxy(ServiceBase):
         return settings
         #TODO: query the backends for additional settings
     
-    def set_service_settings(self, name):
-        pass #TODO
+    def set_service_settings(self, name, newsettings):
+        if name in self.sls:
+            for sname in newsettings:
+                self.sls[name].set_setting(sname, newsettings[sname])
+        #TODO: send the remaining settings to backends
     
