@@ -29,7 +29,8 @@ class RootJobService(DBusObject):
         self.proxy = ServiceProxy()
         self.jobs = []
         
-        for job in self.proxy.get_all_services():
+        allsvcs = self.proxy.get_all_services()
+        for job in allsvcs:
             self.jobs.append(SingleJobService(
                 conn,
                 '%s/%s' % (DBUS_PATH, dbus_safe_name(job)),
