@@ -14,9 +14,9 @@ class ServiceSettings:
     
     def __init__(self, jobname):
         self.jobname = jobname
-        self.filename = SLS_SYSTEM.format(jobname)
+        self.filename = SLS_LOCAL.format(jobname)
         if not exists(self.filename):
-            self.filename = SLS_LOCAL.format(jobname)
+            self.filename = SLS_SYSTEM.format(jobname)
         self.tree = ElementTree()
         self.tree.parse(self.filename)
         self.selements = {}
@@ -45,8 +45,8 @@ class ServiceSettings:
         values = []
         self.settings[name] = raw
         for v in ele.findall('values/value'):
-            values.append((v.get('name'), v.get('description', '')))
-            if v.text == raw:
+            values.append((v.get('name'), v.findtext('description', '')))
+            if v.findtext('data') == raw:
                 self.settings[name] = v.get('name')
         return (ele.get('type'), ele.findtext('description'),
                 self.settings[name], values)
@@ -57,7 +57,7 @@ class ServiceSettings:
         newval = value
         for v in ele.findall('values/value'):
             if v.get('name') == value:
-                newval = v.text
+                newval = v.findtext('data')
                 break
         filename = ele.findtext('file')
         # write the new values

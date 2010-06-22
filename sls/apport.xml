@@ -8,8 +8,12 @@
         <file>/etc/default/apport</file>
         <parse>enabled=%s</parse>
         <values>
-            <value name="true">1</value>
-            <value name="false">0</value>
+            <value name="true">
+                <data>1</data>
+            </value>
+            <value name="false">
+                <data>0</data>
+            </value>
         </values>
     </setting>
 </settings>

@@ -8,8 +8,12 @@
         <file>/etc/default/ufw</file>
         <parse>IPV6=%s</parse>
         <values>
-            <value name="true">yes</value>
-            <value name="false">no</value>
+            <value name="true">
+                <data>yes</data>
+            </value>
+            <value name="false">
+                <data>no</data>
+            </value>
         </values>
     </setting>
     <setting name="default_input_policy" type="choice">
@@ -17,10 +21,22 @@
         <file>/etc/default/ufw</file>
         <parse>DEFAULT_INPUT_POLICY="%s"</parse>
         <values>
-            <value name="drop" description="Drop">DROP</value>
-            <value name="accept" description="Accept">ACCEPT</value>
-            <value name="accept_no_track" description="Accept (no connection tracking)">ACCEPT_NO_TRACK</value>
-            <value name="reject" description="Reject">REJECT</value>
+            <value name="drop">
+                <data>DROP</data>
+                <description>Drop</description>
+            </value>
+            <value name="accept">
+                <data>ACCEPT</data>
+                <description>Accept</description>
+            </value>
+            <value name="accept_no_track">
+                <data>ACCEPT_NO_TRACK</data>
+                <description>Accept (no connection tracking)</description>
+            </value>
+            <value name="reject">
+                <data>REJECT</data>
+                <description>Reject</description>
+            </value>
         </values>
     </setting>
     <setting name="default_output_policy" type="choice">
@@ -28,10 +44,22 @@
         <file>/etc/default/ufw</file>
         <parse>DEFAULT_OUTPUT_POLICY="%s"</parse>
         <values>
-            <value name="drop" description="Drop">DROP</value>
-            <value name="accept" description="Accept">ACCEPT</value>
-            <value name="accept_no_track" description="Accept (no connection tracking)">ACCEPT_NO_TRACK</value>
-            <value name="reject" description="Reject">REJECT</value>
+            <value name="drop">
+                <data>DROP</data>
+                <description>Drop</description>
+            </value>
+            <value name="accept">
+                <data>ACCEPT</data>
+                <description>Accept</description>
+            </value>
+            <value name="accept_no_track">
+                <data>ACCEPT_NO_TRACK</data>
+                <description>Accept (no connection tracking)</description>
+            </value>
+            <value name="reject">
+                <data>REJECT</data>
+                <description>Reject</description>
+            </value>
         </values>
     </setting>
 </settings>
