@@ -2,11 +2,12 @@
 
 from os import listdir
 from distutils.core import setup
+from subprocess import Popen, PIPE
 
 
 setup_info = dict(
     name='jobservice',
-    version='0.1',
+    version='0.1~bzr',
     description='jobservice',
     author='Jacob Peddicord',
     author_email='jpeddicord@ubuntu.com',
@@ -21,7 +22,14 @@ setup_info = dict(
     ],
 )
 
+# get the bzr revision if applicable
+if 'bzr' in setup_info['version']:
+    try:
+        setup_info['version'] += Popen(['bzr', 'revno'],stdout=PIPE).communicate()[0].strip()
+    except: pass
+
 #TODO: modify com.ubuntu.JobService.service to replace the installation path
+#TODO: build_i18n
 
 setup(**setup_info)
 

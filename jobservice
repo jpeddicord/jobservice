@@ -62,6 +62,6 @@ if __name__ == '__main__':
     srv = RootJobService(
         BusName('com.ubuntu.JobService', bus=SystemBus()),
         DBUS_PATH,
-        idle=IdleTimeout(loop, 100)
+        idle=IdleTimeout(loop, 300)
     )
     loop.run()
