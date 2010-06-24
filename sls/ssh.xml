@@ -7,7 +7,7 @@
         <description>Port</description>
         <file>/etc/ssh/sshd_config</file>
         <parse>Port %s</parse>
-        <values lower="0" upper="65535" />
+        <values min="0" max="65535" />
     </setting>
     <setting name="x11" type="bool">
         <description>X11 Forwarding</description>

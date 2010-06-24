@@ -10,8 +10,8 @@
 <!ELEMENT parse (#PCDATA)>
 
 <!ELEMENT values (value*)>
-<!ATTLIST values lower CDATA #IMPLIED>
-<!ATTLIST values upper CDATA #IMPLIED>
+<!ATTLIST values min CDATA #IMPLIED>
+<!ATTLIST values max CDATA #IMPLIED>
 <!ELEMENT value (data,description?)>
 <!ATTLIST value name CDATA #REQUIRED>
 <!ELEMENT data (#PCDATA)>
