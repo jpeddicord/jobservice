@@ -9,7 +9,7 @@
 <!ELEMENT file (#PCDATA)>
 <!ELEMENT parse (#PCDATA)>
 
-<!ELEMENT values (value+)>
+<!ELEMENT values (value*)>
 <!ATTLIST values lower CDATA #IMPLIED>
 <!ATTLIST values upper CDATA #IMPLIED>
 <!ELEMENT value (data,description?)>

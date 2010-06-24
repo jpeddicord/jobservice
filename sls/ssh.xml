@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC
+ "-//Ubuntu//DTD JobService Service-Level Settings 0.1//EN"
+ "http://people.ubuntu.com/~jpeddicord/SLS/0.1/sls.dtd">
+<settings>
+    <setting name="port" type="int">
+        <description>Port</description>
+        <file>/etc/ssh/sshd_config</file>
+        <parse>Port %s</parse>
+        <values lower="0" upper="65535" />
+    </setting>
+    <setting name="x11" type="bool">
+        <description>X11 Forwarding</description>
+        <file>/etc/ssh/sshd_config</file>
+        <parse>X11Forwarding %s</parse>
+        <values>
+            <value name="true">
+                <data>yes</data>
+            </value>
+            <value name="false">
+                <data>no</data>
+            </value>
+        </values>
+    </setting>
+</settings>
