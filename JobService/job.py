@@ -57,7 +57,7 @@ class SingleJobService(DBusObject):
         self.root.proxy.stop_service(self.name)
         self._props = {}
     
-    @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='a{s(sssa(ss))}',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='a{s(sssa(ss)a{ss})}',
                 sender_keyword='sender', connection_keyword='conn')
     def GetSettings(self, sender=None, conn=None):
         """
@@ -73,6 +73,10 @@ class SingleJobService(DBusObject):
                     string name
                     string description
                 )
+                dict constraints {
+                    key: string type
+                    value: string value
+                }
             )
         }
         """
