@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC
+ "-//Ubuntu//DTD JobService Service-Level Settings 0.1//EN"
+ "http://people.ubuntu.com/~jpeddicord/SLS/0.1/sls.dtd">
+<settings>
+    <setting name="enable" type="bool">
+        <description>Enable kernel crash reporting</description>
+        <file>/etc/default/kerneloops</file>
+        <parse>enabled=%s</parse>
+        <values>
+            <value name="true">
+                <data>1</data>
+            </value>
+            <value name="false">
+                <data>0</data>
+            </value>
+        </values>
+    </setting>
+</settings>
