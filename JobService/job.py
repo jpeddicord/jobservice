@@ -1,8 +1,10 @@
 
+import logging
 from dbus import PROPERTIES_IFACE
 from dbus.service import BusName, Object as DBusObject, method as DBusMethod
 from JobService import DBUS_JOB_IFACE, JobException
 
+log = logging.getLogger('jobservice')
 
 class SingleJobService(DBusObject):
     """
@@ -42,6 +44,7 @@ class SingleJobService(DBusObject):
         Starts a job by name.
         """
         self.root.idle.ping()
+        log.debug('Start called on {0}'.format(self.name))
         self.root.policy.check(sender, conn)
         self.root.proxy.start_service(self.name)
         self._props = {}
@@ -53,6 +56,7 @@ class SingleJobService(DBusObject):
         Stops a job by name.
         """
         self.root.idle.ping()
+        log.debug('Stop called on {0}'.format(self.name))
         self.root.policy.check(sender, conn)
         self.root.proxy.stop_service(self.name)
         self._props = {}
@@ -81,6 +85,7 @@ class SingleJobService(DBusObject):
         }
         """
         self.root.idle.ping()
+        log.debug('GetSettings called on {0}'.format(self.name))
         self.root.policy.check(sender, conn)
         return self.root.proxy.get_service_settings(self.name)
     
@@ -91,6 +96,7 @@ class SingleJobService(DBusObject):
         Sets a job's settings.
         """
         self.root.idle.ping()
+        log.debug('SetSettings called on {0}'.format(self.name))
         self.root.policy.check(sender, conn)
         self.root.proxy.set_service_settings(self.name, settings)
     

@@ -1,9 +1,11 @@
 
+import logging
 from re import search
 from subprocess import Popen, PIPE
 from dbus import Array
 from JobService.settings import ServiceSettings
 
+log = logging.getLogger('jobservice.backends')
 
 class ServiceBase:
     
@@ -88,11 +90,13 @@ class ServiceProxy(ServiceBase):
         for bk in self.backends:
             if name in self.backends[bk]:
                 bk.start_service(name)
+                log.info("Started {0}".format(name))
     
     def stop_service(self, name):
         for bk in self.backends:
             if name in self.backends[bk]:
                 bk.stop_service(name)
+                log.info("Stopped {0}".format(name))
     
     def get_service_settings(self, name):
         settings = {}

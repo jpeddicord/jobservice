@@ -1,6 +1,9 @@
 
+import logging
 from time import time
 from glib import timeout_add_seconds
+
+log = logging.getLogger('jobservice')
 
 class IdleTimeout:
     """
@@ -18,6 +21,7 @@ class IdleTimeout:
         now = time()
         # we were left idle, time to quit
         if now - self.lastused > self.idlemax:
+            log.info("Left idle - shutting down")
             self.loop.quit()
             return False
         return True

@@ -1,5 +1,6 @@
 
 import sys
+import logging
 from dbus.service import Object as DBusObject, method as DBusMethod
 from JobService import DBUS_PATH, DBUS_IFACE
 from JobService.backends import ServiceProxy
@@ -7,6 +8,7 @@ from JobService.job import SingleJobService
 from JobService.policy import Policy
 from JobService.util import dbus_safe_name
 
+log = logging.getLogger('jobservice')
 
 class RootJobService(DBusObject):
 
@@ -46,6 +48,7 @@ class RootJobService(DBusObject):
         )
         """
         self.idle.ping()
+        log.debug("GetAllJobs called")
         svclist = []
         for job in self.jobs:
             svclist.append((job.name, job.path))
