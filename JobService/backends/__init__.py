@@ -18,8 +18,10 @@ class ServiceBase:
             'author': 'Nobody',
             'running': False,
             'automatic': False,
+            'pid': 0,
             'starton': Array(signature='s'),
             'stopon': Array(signature='s'),
+            'file': '',
         }
     
     def start_service(self, name):

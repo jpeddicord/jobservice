@@ -59,10 +59,13 @@ class ServiceBackend(ServiceBase):
             'author': '',
             'running': False,
             'automatic': False,
+            'pid': 0,
             'starton': Array(signature='s'),
             'stopon': Array(signature='s'),
+            'file': '',
         }
         props = self._get_lsb_properties(name)
+        info['file'] = props['file']
         if 'Short-Description' in props:
             info['description'] = props['Short-Description']
         # get the runlevels & implied running state
@@ -104,9 +107,9 @@ class ServiceBackend(ServiceBase):
         Scan a service's init.d entry for LSB information about it.
         Returns a dictionary of the entries provided.
         """
-        props = {}
+        props = {'file': '/etc/init.d/{0}'.format(name)}
         try:
-            entry = open('/etc/init.d/{0}'.format(name), 'r')
+            entry = open(props['file'])
         except IOError: return props
         parsing = False
         for line in entry:

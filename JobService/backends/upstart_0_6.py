@@ -66,7 +66,8 @@ class ServiceBackend(ServiceBase):
         props = job_obj.GetAll('com.ubuntu.Upstart0_6.Job',
                 dbus_interface=PROPERTIES_IFACE)
         # starton/stopon
-        with open('/etc/init/{0}.conf'.format(job_name), 'r') as conf:
+        info['file'] = '/etc/init/{0}.conf'.format(job_name)
+        with open(info['file']) as conf:
             starton = self._parse_conf(conf, 'start on')
             stopon = self._parse_conf(conf, 'stop on')
             info['starton'] += self._extract_events(starton)
@@ -79,9 +80,10 @@ class ServiceBackend(ServiceBase):
             inst_props = inst_obj.GetAll('com.ubuntu.Upstart0_6.Instance',
                     dbus_interface=PROPERTIES_IFACE)
             info['running'] = (inst_props['state'] == 'running')
+            if inst_props['processes']:
+                info['pid'] = inst_props['processes'][0][1]
             # we've found our (named) instance
             if inst_props['name'] == inst_name:
-                info['running'] = (inst_props['state'] == 'running')
                 break
         info.update(props)
         return info
