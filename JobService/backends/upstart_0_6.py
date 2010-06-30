@@ -51,6 +51,7 @@ class ServiceBackend(ServiceBase):
         info = {
             'running': False,
             'automatic': False,
+            'pid': 0,
             'starton': Array(signature='s'),
             'stopon': Array(signature='s'),
         }
