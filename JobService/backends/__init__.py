@@ -27,11 +27,16 @@ class ServiceBase:
         }
     
     def start_service(self, name):
-        print "Starting", name
+        pass
     
     def stop_service(self, name):
-        print "Stopping", name
+        pass
     
+    def get_service_settings(self, name):
+        return {}
+    
+    def set_service_settings(self, name, newsettings):
+        pass
 
 class ServiceProxy(ServiceBase):
     """
@@ -43,8 +48,10 @@ class ServiceProxy(ServiceBase):
         """
         Load the appropriate backends for the current system.
         """
-        self.backends = {}
+        self.backends = []
+        self.bkmap = {}
         self.sls = {}
+        self.bksls = {}
         load = ['sysv_stb']
         
         # check for upstart
@@ -62,53 +69,56 @@ class ServiceProxy(ServiceBase):
         for mod in load:
             newmod = __import__('JobService.backends.' + mod,
                     fromlist=['ServiceBackend'])
-            newbackend = newmod.ServiceBackend()
-            self.backends[newbackend] = []
+            self.backends.append(newmod.ServiceBackend())
         
     def get_all_services(self):
         svclist = []
         # get the services
         for bk in self.backends:
-            self.backends[bk] = bk.get_all_services()
-            svclist += self.backends[bk]
-        # initalize setting backends
-        for svc in svclist:
-            try:
-                self.sls[svc] = ServiceSettings(svc)
-            except: pass
+            services = bk.get_all_services()
+            for svc in services:
+                self.bkmap[svc] = bk
+                # check for SLS
+                try:
+                    self.sls[svc] = ServiceSettings(svc)
+                except: pass
+                # and query the backend for additional settings
+                self.bksls[svc] = bk.get_service_settings(svc)
+            svclist += services
         return svclist
     
     def get_service(self, name):
-        for bk in self.backends:
-            if name in self.backends[bk]:
-                info = {'backend': bk.__module__[bk.__module__.rfind('.')+1:],
-                        'settings': name in self.sls}
-                info.update(bk.get_service(name))
-                return info
+        bk = self.bkmap[name]
+        info = {'backend': bk.__module__[bk.__module__.rfind('.')+1:],
+                'settings': name in self.sls or len(self.bksls[name])}
+        info.update(bk.get_service(name))
+        return info
     
     def start_service(self, name):
-        for bk in self.backends:
-            if name in self.backends[bk]:
-                bk.start_service(name)
-                log.info("Started {0}".format(name))
+        self.bkmap[name].start_service(name)
+        log.info("Started {0}".format(name))
     
     def stop_service(self, name):
-        for bk in self.backends:
-            if name in self.backends[bk]:
-                bk.stop_service(name)
-                log.info("Stopped {0}".format(name))
+        self.bkmap[name].stop_service(name)
+        log.info("Stopped {0}".format(name))
     
     def get_service_settings(self, name):
-        settings = {}
+        # settings added by backend
+        settings = self.bkmap[name].get_service_settings(name)
         if name in self.sls:
+            # xml settings
             for sname in self.sls[name].get_all_settings():
                 settings[sname] = self.sls[name].get_setting(sname)
         return settings
-        #TODO: query the backends for additional settings
     
     def set_service_settings(self, name, newsettings):
-        if name in self.sls:
-            for sname in newsettings:
-                self.sls[name].set_setting(sname, newsettings[sname])
-        #TODO: send the remaining settings to backends
-    
+        extra = {}
+        for sname, svalue in newsettings.iteritems():
+            try:
+                self.sls[name].set_setting(sname, svalue)
+            # if it's in the XML, it's probably from the backend
+            except KeyError:
+                extra[sname] = svalue
+        # send the leftover settings to the backend
+        self.bkmap[name].set_service_settings(name, extra)
+        
