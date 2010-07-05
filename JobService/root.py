@@ -25,11 +25,9 @@ class RootJobService(DBusObject):
         
         allsvcs = self.proxy.get_all_services()
         for job in allsvcs:
-            self.jobs.append(SingleJobService(
-                conn,
-                '%s/%s' % (DBUS_PATH, dbus_safe_name(job)),
-                name=job,
-                root=self
+            self.jobs.append(SingleJobService(conn,
+                '/'.join((DBUS_PATH, dbus_safe_name(job))),
+                name=job, root=self
             ))
         
     @DBusMethod(DBUS_IFACE, in_signature='', out_signature='a(so)',
