@@ -12,15 +12,11 @@ log = logging.getLogger('jobservice')
 
 class RootJobService(DBusObject):
 
-    def __init__(self, conn=None, object_path=None, bus_name=None, idle=None):
+    def __init__(self, conn=None, object_path=None, bus_name=None, idle=None, enforce=True):
         """
         Fire up this service as well as all of the paths for individual jobs.
         """
         DBusObject.__init__(self, conn, object_path, bus_name)
-        
-        enforce = True
-        if len(sys.argv) > 1 and sys.argv[1] == 'noenforce':
-            enforce = False
         
         self.idle = idle
         self.policy = Policy(enforce)
