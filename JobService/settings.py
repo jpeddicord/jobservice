@@ -4,6 +4,7 @@ from os.path import exists
 from xml.etree.cElementTree import ElementTree
 
 SLS_SYSTEM = '/usr/share/jobservice/sls/{0}.xml'
+SLS_DEFAULT = '/usr/share/jobservice/default/{0}.xml'
 SLS_LOCAL = 'sls/{0}.xml'
 
 
@@ -14,9 +15,11 @@ class ServiceSettings:
     
     def __init__(self, jobname):
         self.jobname = jobname
-        self.filename = SLS_LOCAL.format(jobname)
-        if not exists(self.filename):
-            self.filename = SLS_SYSTEM.format(jobname)
+        self.filename = ''
+        for loc in (SLS_SYSTEM, SLS_DEFAULT, SLS_LOCAL):
+            self.filename = loc.format(jobname)
+            if exists(self.filename):
+                break
         self.tree = ElementTree()
         self.tree.parse(self.filename)
         self.selements = {}
