@@ -3,8 +3,13 @@ from os import rename
 from os.path import exists
 from xml.etree.cElementTree import ElementTree
 
-SLS_SYSTEM = '/usr/share/jobservice/sls/{0}.xml'
-SLS_DEFAULT = '/usr/share/jobservice/default/{0}.xml'
+try:
+    from JobService.info import prefix
+except:
+    prefix = '/usr'
+
+SLS_SYSTEM = prefix + '/share/jobservice/sls/{0}.xml'
+SLS_DEFAULT = prefix + '/share/jobservice/default/{0}.xml'
 SLS_LOCAL = 'sls/{0}.xml'
 
 
