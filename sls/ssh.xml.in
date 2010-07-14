@@ -3,14 +3,14 @@
  "-//Ubuntu//DTD JobService Service-Level Settings 0.1//EN"
  "http://people.ubuntu.com/~jpeddicord/SLS/0.1/sls.dtd">
 <settings>
-    <setting type="int" name="port">
-        <description>Port</description>
+    <setting name="port" type="int">
+        <_description>Port</_description>
         <file>/etc/ssh/sshd_config</file>
         <parse>Port %s</parse>
-        <values min="0" max="65535"/>
+        <values min="0" max="65535" />
     </setting>
-    <setting type="bool" name="x11">
-        <description>X11 Forwarding</description>
+    <setting name="x11" type="bool">
+        <_description>X11 Forwarding</_description>
         <file>/etc/ssh/sshd_config</file>
         <parse>X11Forwarding %s</parse>
         <values>

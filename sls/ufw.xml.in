@@ -3,8 +3,8 @@
  "-//Ubuntu//DTD JobService Service-Level Settings 0.1//EN"
  "http://people.ubuntu.com/~jpeddicord/SLS/0.1/sls.dtd">
 <settings>
-    <setting type="bool" name="ipv6">
-        <description>Use IPV6</description>
+    <setting name="ipv6" type="bool">
+        <_description>Use IPV6</_description>
         <file>/etc/default/ufw</file>
         <parse>IPV6=%s</parse>
         <values>
@@ -16,49 +16,49 @@
             </value>
         </values>
     </setting>
-    <setting type="choice" name="default_input_policy">
-        <description>Default inbound policy</description>
+    <setting name="default_input_policy" type="choice">
+        <_description>Default inbound policy</_description>
         <file>/etc/default/ufw</file>
         <parse>DEFAULT_INPUT_POLICY="%s"</parse>
         <values>
             <value name="drop">
                 <data>DROP</data>
-                <description>Drop</description>
+                <_description>Drop</_description>
             </value>
             <value name="accept">
                 <data>ACCEPT</data>
-                <description>Accept</description>
+                <_description>Accept</_description>
             </value>
             <value name="accept_no_track">
                 <data>ACCEPT_NO_TRACK</data>
-                <description>Accept (no connection tracking)</description>
+                <_description>Accept (no connection tracking)</_description>
             </value>
             <value name="reject">
                 <data>REJECT</data>
-                <description>Reject</description>
+                <_description>Reject</_description>
             </value>
         </values>
     </setting>
-    <setting type="choice" name="default_output_policy">
-        <description>Default outbound policy</description>
+    <setting name="default_output_policy" type="choice">
+        <_description>Default outbound policy</_description>
         <file>/etc/default/ufw</file>
         <parse>DEFAULT_OUTPUT_POLICY="%s"</parse>
         <values>
             <value name="drop">
                 <data>DROP</data>
-                <description>Drop</description>
+                <_description>Drop</_description>
             </value>
             <value name="accept">
                 <data>ACCEPT</data>
-                <description>Accept</description>
+                <_description>Accept</_description>
             </value>
             <value name="accept_no_track">
                 <data>ACCEPT_NO_TRACK</data>
-                <description>Accept (no connection tracking)</description>
+                <_description>Accept (no connection tracking)</_description>
             </value>
             <value name="reject">
                 <data>REJECT</data>
-                <description>Reject</description>
+                <_description>Reject</_description>
             </value>
         </values>
     </setting>

@@ -3,10 +3,10 @@
  "-//Ubuntu//DTD JobService Service-Level Settings 0.1//EN"
  "http://people.ubuntu.com/~jpeddicord/SLS/0.1/sls.dtd">
 <settings>
-    <setting type="bool" name="enable">
-        <description>Enable crash reporting</description>
-        <file>/etc/default/apport</file>
-        <parse>enabled=%s</parse>
+    <setting name="system" type="bool">
+        <_description>System mode</_description>
+        <file>/etc/default/pulseaudio</file>
+        <parse>PULSEAUDIO_SYSTEM_START=%s</parse>
         <values>
             <value name="true">
                 <data>1</data>

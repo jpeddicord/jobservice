@@ -4,3 +4,4 @@ MANIFEST
 JobService/info.py
 test
 build
+po/POTFILES.in
