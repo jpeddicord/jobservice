@@ -41,7 +41,7 @@ class ServiceSettings:
             lst.append(name)
         return lst
     
-    def get_setting(self, name):
+    def get_setting(self, name, lang=''):
         """
         Return details of a specific setting by name in the format
         (type, description, current value, possible values[], constraints{})

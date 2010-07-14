@@ -102,13 +102,13 @@ class ServiceProxy(ServiceBase):
         self.bkmap[name].stop_service(name)
         log.info("Stopped {0}".format(name))
     
-    def get_service_settings(self, name):
+    def get_service_settings(self, name, lang=''):
         # settings added by backend
         settings = self.bkmap[name].get_service_settings(name)
         if name in self.sls:
             # xml settings
             for sname in self.sls[name].get_all_settings():
-                settings[sname] = self.sls[name].get_setting(sname)
+                settings[sname] = self.sls[name].get_setting(sname, lang)
         return settings
     
     def set_service_settings(self, name, newsettings):

@@ -61,11 +61,14 @@ class SingleJobService(DBusObject):
         self.root.proxy.stop_service(self.name)
         self._props = {}
     
-    @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='a{s(sssa(ss)a{ss})}',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='s', out_signature='a{s(sssa(ss)a{ss})}',
                 sender_keyword='sender', connection_keyword='conn')
-    def GetSettings(self, sender=None, conn=None):
+    def GetSettings(self, lang, sender=None, conn=None):
         """
         Returns a job's available settings and constraints.
+        
+        Takes a single argument (locale) used to determine what language the
+        descriptions should be sent in. If unknown, use an empty string.
         
         Returns dict settings {
             key: string setting-name
@@ -85,9 +88,9 @@ class SingleJobService(DBusObject):
         }
         """
         self.root.idle.ping()
-        log.debug('GetSettings called on {0}'.format(self.name))
+        log.debug('GetSettings ({1}) called on {0}'.format(self.name, lang))
         self.root.policy.check(sender, conn)
-        return self.root.proxy.get_service_settings(self.name)
+        return self.root.proxy.get_service_settings(self.name, lang)
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='a{ss}', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
