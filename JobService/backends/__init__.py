@@ -32,6 +32,9 @@ class ServiceBase:
     def stop_service(self, name):
         pass
     
+    def set_service_automatic(self, name, auto):
+        pass
+    
     def get_service_settings(self, name):
         return {}
     

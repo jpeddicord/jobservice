@@ -55,12 +55,7 @@ class ServiceBackend(ServiceBase):
             'starton': Array(signature='s'),
             'stopon': Array(signature='s'),
         }
-        # get the job name if we're an instance
-        if '/' in name:
-            job_name, inst_name = name.split('/')
-        else:
-            job_name = name
-            inst_name = None
+        job_name, inst_name = self._split_job(name)
         # job-level properties
         job_obj = self.bus.get_object('com.ubuntu.Upstart',
                 self.jobpaths[job_name])
@@ -76,30 +71,21 @@ class ServiceBackend(ServiceBase):
             # automatic if starton isn't commented out
             info['automatic'] = (starton[0] != '#')
         # running state: check the instance(s)
-        for inst_path in self.instpaths[self.jobpaths[job_name]]:
-            inst_obj = self.bus.get_object('com.ubuntu.Upstart', inst_path)
-            inst_props = inst_obj.GetAll('com.ubuntu.Upstart0_6.Instance',
-                    dbus_interface=PROPERTIES_IFACE)
+        inst_obj, inst_props = self._get_inst(job_name, inst_name)
+        if inst_obj:
             info['running'] = (inst_props['state'] == 'running')
             if inst_props['processes']:
                 info['pid'] = inst_props['processes'][0][1]
-            # we've found our (named) instance
-            if inst_props['name'] == inst_name:
-                break
         info.update(props)
         return info
     
     def start_service(self, name):
         """
-        If a job is given, try to start it's instance first if it has one.
+        If a job is given, try to start its instance first if it has one.
         If it doesn't have one, start via job.
         If an instance is given, start it directly.
         """
-        if '/' in name:
-            job_name, inst_name = name.split('/')
-        else:
-            job_name = name
-            inst_name = None
+        job_name, inst_name = self._split_job(name)
         # no instances, start the job
         if not self.instpaths[self.jobpaths[job_name]]:
             job_obj = self.bus.get_object('com.ubuntu.Upstart',
@@ -108,47 +94,49 @@ class ServiceBackend(ServiceBase):
             job.Start([], True)
         # one or more instances available
         else:
-            for inst_path in self.instpaths[self.jobpaths[job_name]]:
-                inst_obj = self.bus.get_object('com.ubuntu.Upstart', inst_path)
-                inst_props = inst_obj.GetAll('com.ubuntu.Upstart0_6.Instance',
-                        dbus_interface=PROPERTIES_IFACE)
-                # stop on the named instance
-                if inst_props['name'] == inst_name:
-                    break
+            inst_obj, inst_props = self._get_inst(job_name, inst_name)
             inst_obj.Start(True, dbus_interface='com.ubuntu.Upstart0_6.Instance')
-        # update config
-        with open('/etc/init/{0}.conf'.format(job_name), 'r') as conf:
-           self._set_automatic(conf, True)
         # reload
         self.get_all_services()
         
     def stop_service(self, name):
-        """
-        Find the appropritate job instance (named, if available) and stop it.
-        """
+        """Find the appropritate job instance and stop it."""
+        job_name, inst_name = self._split_job(name)
+        inst_obj, inst_props = self._get_inst(job_name, inst_name)
+        inst_obj.Stop(True, dbus_interface='com.ubuntu.Upstart0_6.Instance')
+        # reload
+        self.get_all_services()
+    
+    def set_service_automatic(self, name, auto):
+        job_name, inst_name = self._split_job(name)
+        with open('/etc/init/{0}.conf'.format(job_name)) as conf:
+            self._set_automatic(conf, auto)
+    
+    def _split_job(self, name):
+        """Return (job_name, inst_name) from name."""
         if '/' in name:
             job_name, inst_name = name.split('/')
         else:
             job_name = name
             inst_name = None
-        for inst_path in self.instpaths[self.jobpaths[job_name]]:
+        return (job_name, inst_name)
+    
+    def _get_inst(self, job_name, inst_name):
+        """Return (inst_obj, inst_props) matching job_name & inst_name."""
+        paths = self.instpaths[self.jobpaths[job_name]]
+        if not paths:
+            return (None, None)
+        for inst_path in paths:
             inst_obj = self.bus.get_object('com.ubuntu.Upstart', inst_path)
             inst_props = inst_obj.GetAll('com.ubuntu.Upstart0_6.Instance',
                     dbus_interface=PROPERTIES_IFACE)
             if inst_props['name'] == inst_name:
                 break
-        inst_obj.Stop(True, dbus_interface='com.ubuntu.Upstart0_6.Instance')
-        # update config
-        with open('/etc/init/{0}.conf'.format(job_name), 'r') as conf:
-           self._set_automatic(conf, False)
-        # reload
-        self.get_all_services()
+        return (inst_obj, inst_props)
+        
     
     def _set_automatic(self, conf, automatic=True):
-        """
-        Comment/uncomment a job conf file's start on line.
-        Closes conf.
-        """
+        """Comment/uncomment a job conf file's start on line. Closes conf."""
         newname = '{0}.new'.format(conf.name)
         with open(newname, 'w') as new:
             for line in conf:

@@ -7,13 +7,11 @@ from JobService import DBUS_JOB_IFACE, JobException
 log = logging.getLogger('jobservice')
 
 class SingleJobService(DBusObject):
-    """
-    Exports a single job as its own object on our bus.
-    """
+    """Export a single job as its own object on our bus."""
     
-    def __init__(self, conn=None, object_path=None, bus_name=None, name=None, root=None):
+    def __init__(self, conn=None, object_path=None,
+                 bus_name=None, name=None, root=None):
         DBusObject.__init__(self, conn, object_path, bus_name)
-        
         self.name = name
         self.root = root
         self.path = self.__dbus_object_path__
@@ -22,27 +20,23 @@ class SingleJobService(DBusObject):
     @DBusMethod(PROPERTIES_IFACE, in_signature='s', out_signature='a{sv}')
     def GetAll(self, interface):
         self.root.idle.ping()
-        if interface == DBUS_JOB_IFACE:
-            self._load_properties()
-            return self._props
-        else:
+        if interface != DBUS_JOB_IFACE:
             raise JobException('Interface not supported.')
+        self._load_properties()
+        return self._props
             
     @DBusMethod(PROPERTIES_IFACE, in_signature='ss', out_signature='v')
     def Get(self, interface, prop):
         self.root.idle.ping()
-        if interface == DBUS_JOB_IFACE:
-            self._load_properties()
-            return self._props[prop]
-        else:
+        if interface != DBUS_JOB_IFACE:
             raise JobException('Interface not supported.')
+        self._load_properties()
+        return self._props[prop]
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
     def Start(self, sender=None, conn=None):
-        """
-        Starts a job by name.
-        """
+        """Start a job by name. Does not enable/disable the job."""
         self.root.idle.ping()
         log.debug('Start called on {0}'.format(self.name))
         self.root.policy.check(sender, conn)
@@ -52,20 +46,29 @@ class SingleJobService(DBusObject):
     @DBusMethod(DBUS_JOB_IFACE, in_signature='', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
     def Stop(self, sender=None, conn=None):
-        """
-        Stops a job by name.
-        """
+        """Stop a job by name. Does not enable/disable the job."""
         self.root.idle.ping()
         log.debug('Stop called on {0}'.format(self.name))
         self.root.policy.check(sender, conn)
         self.root.proxy.stop_service(self.name)
         self._props = {}
     
-    @DBusMethod(DBUS_JOB_IFACE, in_signature='s', out_signature='a{s(sssa(ss)a{ss})}',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='b', out_signature='',
+                sender_keyword='sender', connection_keyword='conn')
+    def SetAutomatic(self, auto, sender=None, conn=None):
+        """Make a job automatic or manual. Does not change state."""
+        self.root.idle.ping()
+        log.debug('SetAutomatic ({1}) called on {0}'.format(self.name, auto))
+        self.root.policy.check(sender, conn)
+        self.root.proxy.set_service_automatic(self.name, auto)
+        self._props = {}
+    
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='s',
+                out_signature='a{s(sssa(ss)a{ss})}',
                 sender_keyword='sender', connection_keyword='conn')
     def GetSettings(self, lang, sender=None, conn=None):
         """
-        Returns a job's available settings and constraints.
+        Return a job's available settings and constraints.
         
         Takes a single argument (locale) used to determine what language the
         descriptions should be sent in. If unknown, use an empty string.
@@ -95,9 +98,7 @@ class SingleJobService(DBusObject):
     @DBusMethod(DBUS_JOB_IFACE, in_signature='a{ss}', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
     def SetSettings(self, settings, sender=None, conn=None):
-        """
-        Sets a job's settings.
-        """
+        """Change a job's settings."""
         self.root.idle.ping()
         log.debug('SetSettings called on {0}'.format(self.name))
         self.root.policy.check(sender, conn)
