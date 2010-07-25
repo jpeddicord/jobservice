@@ -134,7 +134,6 @@ class ServiceBackend(ServiceBase):
                 break
         return (inst_obj, inst_props)
         
-    
     def _set_automatic(self, conf, automatic=True):
         """Comment/uncomment a job conf file's start on line. Closes conf."""
         newname = '{0}.new'.format(conf.name)

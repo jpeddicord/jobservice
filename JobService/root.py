@@ -30,6 +30,8 @@ class RootJobService(DBusObject):
                 name=job, root=self
             ))
         
+        log.info('Ready')
+        
     @DBusMethod(DBUS_IFACE, in_signature='', out_signature='a(so)',
                 sender_keyword='sender', connection_keyword='conn')
     def GetAllJobs(self, sender=None, conn=None):

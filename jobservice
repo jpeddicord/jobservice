@@ -21,7 +21,7 @@ level = logging.DEBUG if options.debug else logging.INFO
 logging.basicConfig(level=level, datefmt="%H:%M:%S",
         format="%(asctime)s %(name)s %(levelname)s: %(message)s")
 log = logging.getLogger('jobservice')
-log.info("Starting up")
+log.debug("Starting up")
 
 # start up!
 DBusGMainLoop(set_as_default=True)

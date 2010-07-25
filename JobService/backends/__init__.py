@@ -5,7 +5,9 @@ from subprocess import Popen, PIPE
 from dbus import Array
 from JobService.settings import ServiceSettings
 
-log = logging.getLogger('jobservice.backends')
+log = logging.getLogger('backends')
+
+BACKENDS = []   # automatic if empty
 
 class ServiceBase:
     
@@ -55,18 +57,13 @@ class ServiceProxy(ServiceBase):
         self.bkmap = {}
         self.sls = {}
         self.bksls = {}
-        load = ['sysv_stb']
         
-        # check for upstart
-        p = Popen(['/sbin/init', '--version'], stdout=PIPE)
-        out = p.stdout.read()
-        
-        match = search('upstart (\d+\.\d+)', out)
-        if match:
-            if match.group(1) == '0.6':
-                load += ['upstart_0_6']
-            elif match.group(1) == '0.10':
-                load += ['upstart_0_10']
+        if BACKENDS:
+            load = BACKENDS
+            log.debug('Backends set to: ' + ', '.join(load))
+        else:
+            load = _auto_backends()
+            log.debug('Autoloading backends: ' + ', '.join(load))
         
         # load the backends
         for mod in load:
@@ -124,4 +121,21 @@ class ServiceProxy(ServiceBase):
                 extra[sname] = svalue
         # send the leftover settings to the backend
         self.bkmap[name].set_service_settings(name, extra)
+
+
+def _auto_backends():
+    """Return a list of available backends on this system."""
+    
+    # start with sysv
+    load = ['sysv']
         
+    # check for upstart
+    p = Popen(['/sbin/init', '--version'], stdout=PIPE)
+    out = p.stdout.read()
+    match = search('upstart (\d+\.\d+)', out)
+    if match:
+        if match.group(1) == '0.6':
+            load += ['upstart_0_6']
+        elif match.group(1) == '0.10':
+            load += ['upstart_0_10']
+    return load
