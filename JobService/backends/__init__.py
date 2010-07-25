@@ -84,7 +84,9 @@ class ServiceProxy(ServiceBase):
                 except: pass
                 # and query the backend for additional settings
                 self.bksls[svc] = bk.get_service_settings(svc)
-            svclist += services
+                # no duplicates (backends will still properly override)
+                if not svc in svclist:
+                    svclist.append(svc)
         return svclist
     
     def get_service(self, name):
