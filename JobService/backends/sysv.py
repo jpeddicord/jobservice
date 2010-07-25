@@ -6,6 +6,7 @@ from dbus import Array
 from JobService import DBUS_IFACE, JobException
 from JobService.backends import ServiceBase
 
+
 class SysVException(JobException):
     _dbus_error_name = DBUS_IFACE + '.SysVException'
 
@@ -77,6 +78,9 @@ class ServiceBackend(ServiceBase):
         except CalledProcessError, e:
             raise SysVException('Stop failed: code {0}'.format(e.returncode))
         self.running[name] = False
+    
+    def set_service_automatic(self, name, auto):
+        pass #TODO
     
     def _get_runlevel_info(self):
         """Parse /etc/rc?.d and store symlink information.

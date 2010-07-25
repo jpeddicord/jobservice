@@ -118,7 +118,7 @@ class ServiceProxy(ServiceBase):
         for sname, svalue in newsettings.iteritems():
             try:
                 self.sls[name].set_setting(sname, svalue)
-            # if it's in the XML, it's probably from the backend
+            # if it's not in the XML, it's probably from the backend
             except KeyError:
                 extra[sname] = svalue
         # send the leftover settings to the backend
