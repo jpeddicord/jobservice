@@ -57,8 +57,10 @@ class ServiceSettings:
             values.append((v.get('name'), v.findtext('description', '')))
             if v.findtext('data') == raw:
                 self.settings[name] = v.get('name')
+        vals = ele.find('values')
+        constraints = vals.attrib if vals else {}
         return (name, ele.get('type'), ele.findtext('description'),
-                self.settings[name], values, ele.find('values').attrib)
+                self.settings[name], values, constraints)
     
     def set_setting(self, name, value):
         ele = self.selements[name]

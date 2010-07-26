@@ -37,7 +37,7 @@ class ServiceBase:
     def set_service_automatic(self, name, auto):
         pass
     
-    def get_service_settings(self, name):
+    def get_service_settings(self, name, lang):
         return []
     
     def set_service_settings(self, name, newsettings):
@@ -83,7 +83,7 @@ class ServiceProxy(ServiceBase):
                     self.sls[svc] = ServiceSettings(svc)
                 except: pass
                 # and query the backend for additional settings
-                self.bksls[svc] = bk.get_service_settings(svc)
+                self.bksls[svc] = bk.get_service_settings(svc, '')
                 # no duplicates (backends will still properly override)
                 if not svc in svclist:
                     svclist.append(svc)
@@ -113,7 +113,7 @@ class ServiceProxy(ServiceBase):
                 settings.append(self.sls[name].get_setting(s, lang))
                 snames.append(s)
         # settings added by backend
-        for s in self.bkmap[name].get_service_settings(name):
+        for s in self.bkmap[name].get_service_settings(name, lang):
             if not s[0] in snames:
                 settings.append(s)
         return settings

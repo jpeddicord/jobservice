@@ -82,6 +82,18 @@ class ServiceBackend(ServiceBase):
     def set_service_automatic(self, name, auto):
         pass #TODO
     
+    def get_service_settings(self, name, lang):
+        settings = []
+        if not name in self.runlevels:
+            return settings
+        for rlvl, start in self.runlevels[name].iteritems():
+            settings.append(('runlevel_{0}'.format(rlvl), 'bool',
+                "Active on runlevel {runlevel}".format(runlevel=rlvl), #XXX: i18n
+                'true' if start[0] else 'false',
+                (('true', ''), ('false', '')), {}
+            ))
+        return settings
+    
     def _get_runlevel_info(self):
         """Parse /etc/rc?.d and store symlink information.
         
