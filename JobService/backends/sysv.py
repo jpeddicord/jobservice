@@ -87,6 +87,9 @@ class ServiceBackend(ServiceBase):
         if not name in self.runlevels:
             return settings
         for rlvl, start in self.runlevels[name].iteritems():
+            if rlvl == 0 or rlvl == 6:
+                # we don't want to manage 0 (shutdown) or 6 (restart)
+                continue
             settings.append(('runlevel_{0}'.format(rlvl), 'bool',
                 "Active on runlevel {runlevel}".format(runlevel=rlvl), #XXX: i18n
                 'true' if start[0] else 'false',
