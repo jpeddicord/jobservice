@@ -64,7 +64,7 @@ class SingleJobService(DBusObject):
         self._props = {}
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='s',
-                out_signature='a{s(sssa(ss)a{ss})}',
+                out_signature='a(ssssa(ss)a{ss})',
                 sender_keyword='sender', connection_keyword='conn')
     def GetSettings(self, lang, sender=None, conn=None):
         """
@@ -73,22 +73,20 @@ class SingleJobService(DBusObject):
         Takes a single argument (locale) used to determine what language the
         descriptions should be sent in. If unknown, use an empty string.
         
-        Returns dict settings {
-            key: string setting-name
-            value: struct (
-                string type
+        Returns list of struct settings (
+            string name
+            string type
+            string description
+            string current-value
+            list of struct values (
+                string name
                 string description
-                string current-value
-                list of struct values (
-                    string name
-                    string description
-                )
-                dict constraints {
-                    key: string type
-                    value: string value
-                }
             )
-        }
+            dict constraints {
+                key: string type
+                value: string value
+            }
+        )
         """
         self.root.idle.ping()
         log.debug('GetSettings ({1}) called on {0}'.format(self.name, lang))

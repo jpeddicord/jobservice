@@ -38,7 +38,7 @@ class ServiceBase:
         pass
     
     def get_service_settings(self, name):
-        return {}
+        return []
     
     def set_service_settings(self, name, newsettings):
         pass
@@ -105,12 +105,17 @@ class ServiceProxy(ServiceBase):
         log.info("Stopped {0}".format(name))
     
     def get_service_settings(self, name, lang=''):
-        # settings added by backend
-        settings = self.bkmap[name].get_service_settings(name)
+        settings = []
+        snames = []
+        # xml settings
         if name in self.sls:
-            # xml settings
-            for sname in self.sls[name].get_all_settings():
-                settings[sname] = self.sls[name].get_setting(sname, lang)
+            for s in self.sls[name].get_all_settings():
+                settings.append(self.sls[name].get_setting(s, lang))
+                snames.append(s)
+        # settings added by backend
+        for s in self.bkmap[name].get_service_settings(name):
+            if not s[0] in snames:
+                settings.append(s)
         return settings
     
     def set_service_settings(self, name, newsettings):

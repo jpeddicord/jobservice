@@ -44,7 +44,8 @@ class ServiceSettings:
     def get_setting(self, name, lang=''):
         """
         Return details of a specific setting by name in the format
-        (type, description, current value, possible values[], constraints{})
+        (name, type, description, current value, possible values[],
+                constraints{})
         """
         ele = self.selements[name]
         with open(ele.findtext('file')) as f:
@@ -56,7 +57,7 @@ class ServiceSettings:
             values.append((v.get('name'), v.findtext('description', '')))
             if v.findtext('data') == raw:
                 self.settings[name] = v.get('name')
-        return (ele.get('type'), ele.findtext('description'),
+        return (name, ele.get('type'), ele.findtext('description'),
                 self.settings[name], values, ele.find('values').attrib)
     
     def set_setting(self, name, value):
