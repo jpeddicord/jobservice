@@ -90,7 +90,6 @@ class SingleJobService(DBusObject):
         """
         self.root.idle.ping()
         log.debug('GetSettings ({1}) called on {0}'.format(self.name, lang))
-        self.root.policy.check(sender, conn)
         return self.root.proxy.get_service_settings(self.name, lang)
     
     @DBusMethod(DBUS_JOB_IFACE, in_signature='a{ss}', out_signature='',
