@@ -106,7 +106,7 @@ class ServiceBackend(ServiceBase):
             ))
         if settings:
             settings.insert(0, ('lbl_runlevels', 'label',
-                    "<b>Runlevels</b> (note: doesn't yet save)", '', (), {}))
+                    "<b>Runlevels</b>", '', (), {})) #XXX: i18n
         return settings
     
     def set_service_settings(self, name, newsettings):
