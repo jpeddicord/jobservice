@@ -3,6 +3,7 @@ from dbus import SystemBus, Interface, Array
 from dbus.exceptions import DBusException
 from JobService.backends import ServiceBase
 
+# This module isn't necessary if using the standard sysv backend.
 
 class ServiceBackend(ServiceBase):
         

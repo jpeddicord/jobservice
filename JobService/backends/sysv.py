@@ -15,7 +15,6 @@ class ServiceBackend(ServiceBase):
     def __init__(self):
         self.runlevels = self._get_runlevel_info()
         self.current = self._get_current_runlevel()
-        self.running = {}
     
     def get_all_services(self):
         svclist = []
@@ -60,10 +59,9 @@ class ServiceBackend(ServiceBase):
                     info['automatic'] = start[0]
         # we cannot reliably determine this, so we fudge by storing.
         # XXX: actually, we can. check the exit code of a "status" call.
-        if name in self.running:
-            info['running'] = self.running[name]
-        else:
-            info['running'] = info['automatic']
+        p = Popen(['/etc/init.d/' + name, 'status'], stdout=PIPE, stderr=PIPE)
+        p.communicate()   # eat stdout/stdin
+        info['running'] = (p.returncode == 0)
         return info
     
     def start_service(self, name):
@@ -71,14 +69,12 @@ class ServiceBackend(ServiceBase):
             check_call(['/etc/init.d/' + name, 'start'])
         except CalledProcessError, e:
             raise SysVException('Start failed: code {0}'.format(e.returncode))
-        self.running[name] = True
     
     def stop_service(self, name):
         try:
             check_call(['/etc/init.d/' + name, 'stop'])
         except CalledProcessError, e:
             raise SysVException('Stop failed: code {0}'.format(e.returncode))
-        self.running[name] = False
     
     def set_service_automatic(self, name, auto):
         self._remove_rc(name, self.current)
