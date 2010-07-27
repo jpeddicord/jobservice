@@ -90,8 +90,14 @@ class ServiceBackend(ServiceBase):
             if rlvl == 0 or rlvl == 6:
                 # we don't want to manage 0 (shutdown) or 6 (restart)
                 continue
-            settings.append(('runlevel_{0}'.format(rlvl), 'bool',
-                "Active on runlevel {runlevel}".format(runlevel=rlvl), #XXX: i18n
+            if rlvl == 1:
+                label = "Active in recovery mode" #XXX: i18n
+            elif rlvl == self.current:
+                label = "Active in current runlevel ({runlevel})".format(runlevel=rlvl) #XXX: i18n
+            else:
+                label = "Active on runlevel {runlevel}".format(runlevel=rlvl) #XXX: i18n
+            
+            settings.append(('runlevel_{0}'.format(rlvl), 'bool', label,
                 'true' if start[0] else 'false',
                 (('true', ''), ('false', '')), {}
             ))
@@ -119,6 +125,12 @@ class ServiceBackend(ServiceBase):
                     svcs[name][runlevel] = (start, pri)
                 break
         return svcs
+    
+    def _remove_rc(self, name, rlvl):
+        """Unlink a service from an rc#.d directory"""
+        pri = str(self.runlevels[name][rlvl][1])
+        start = 'S' if self.runlevels[name][rlvl][0] else 'K'
+        print ''.join((start, pri, name))
       
     def _update_rcd(self):
         """Run update-rd.d"""
