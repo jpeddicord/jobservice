@@ -2,9 +2,9 @@
 <!-- Distributed under the license of the jobservice project. -->
 
 <!ELEMENT settings (setting+)>
-<!ELEMENT setting (description,file,parse,values?)>
+<!ELEMENT setting (description,file,parse?,values?)>
 <!ATTLIST setting name CDATA #REQUIRED>
-<!ATTLIST setting type (bool|int|float|str|choice|file|dir) #REQUIRED>
+<!ATTLIST setting type (bool|int|float|str|choice|file|dir|label|exec) #REQUIRED>
 <!ELEMENT description (#PCDATA)>
 <!ELEMENT file (#PCDATA)>
 <!ELEMENT parse (#PCDATA)>
