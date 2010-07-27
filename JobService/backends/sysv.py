@@ -59,6 +59,7 @@ class ServiceBackend(ServiceBase):
                 if rlvl == self.current:
                     info['automatic'] = start[0]
         # we cannot reliably determine this, so we fudge by storing.
+        # XXX: actually, we can. check the exit code of a "status" call.
         if name in self.running:
             info['running'] = self.running[name]
         else:
@@ -80,7 +81,10 @@ class ServiceBackend(ServiceBase):
         self.running[name] = False
     
     def set_service_automatic(self, name, auto):
-        pass #TODO
+        self._remove_rc(name, self.current)
+        self._link_rc(name, self.current, auto)
+        self.runlevels[name][self.current] = (auto,
+                self.runlevels[name][self.current][1])
     
     def get_service_settings(self, name, lang):
         settings = []
@@ -131,12 +135,15 @@ class ServiceBackend(ServiceBase):
     def _remove_rc(self, name, rlvl):
         """Unlink a service from an rc#.d directory"""
         pri = str(self.runlevels[name][rlvl][1])
-        start = 'S' if self.runlevels[name][rlvl][0] else 'K'
-        print ''.join((start, pri, name))
-      
-    def _update_rcd(self):
-        """Run update-rd.d"""
-        pass
+        mode = 'S' if self.runlevels[name][rlvl][0] else 'K'
+        os.unlink('/etc/rc{0}.d/{1}{2}{3}'.format(rlvl, mode, pri, name))
+    
+    def _link_rc(self, name, rlvl, start):
+        """Re-link an init script to the proper rc#.d location"""
+        pri = str(self.runlevels[name][rlvl][1])
+        mode = 'S' if start else 'K'
+        os.symlink('/etc/init.d/' + name,
+                   '/etc/rc{0}.d/{1}{2}{3}'.format(rlvl, mode, pri, name))
     
     def _get_current_runlevel(self):
         out = Popen(['/sbin/runlevel'], stdout=PIPE).communicate()[0]
