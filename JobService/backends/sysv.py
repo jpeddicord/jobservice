@@ -53,9 +53,9 @@ class ServiceBackend(ServiceBase):
         if name in self.runlevels:
             for rlvl, start in self.runlevels[name].iteritems():
                 if start[0] == True:
-                    info['starton'].append(str(rlvl))
+                    info['starton'].append(rlvl)
                 else:
-                    info['stopon'].append(str(rlvl))
+                    info['stopon'].append(rlvl)
                 if rlvl == self.current:
                     info['automatic'] = start[0]
         # we cannot reliably determine this, so we fudge by storing.
@@ -90,24 +90,34 @@ class ServiceBackend(ServiceBase):
         settings = []
         if not name in self.runlevels:
             return settings
-        settings.append(('lbl_runlevels', 'label',
-            "<b>Runlevels</b> (note: doesn't yet save)", '', (), {}))
-        for rlvl, start in self.runlevels[name].iteritems():
-            if rlvl == 0 or rlvl == 6:
-                # we don't want to manage 0 (shutdown) or 6 (restart)
+        for rlvl in sorted(self.runlevels[name].keys()):
+            if rlvl == '0' or rlvl == '6' or rlvl == 'S':
+                # skip 0 (shutdown), 6 (restart), or S (boot once)
                 continue
-            if rlvl == 1:
+            if rlvl == '1':
                 label = "Active in recovery mode" #XXX: i18n
             elif rlvl == self.current:
                 label = "Active in current runlevel ({runlevel})".format(runlevel=rlvl) #XXX: i18n
             else:
                 label = "Active on runlevel {runlevel}".format(runlevel=rlvl) #XXX: i18n
-            
             settings.append(('runlevel_{0}'.format(rlvl), 'bool', label,
-                'true' if start[0] else 'false',
+                'true' if self.runlevels[name][rlvl][0] else 'false',
                 (('true', ''), ('false', '')), {}
             ))
+        if settings:
+            settings.insert(0, ('lbl_runlevels', 'label',
+                    "<b>Runlevels</b> (note: doesn't yet save)", '', (), {}))
         return settings
+    
+    def set_service_settings(self, name, newsettings):
+        for sname, sval in newsettings.iteritems():
+            if sname.find('runlevel_') == 0:
+                rlvl = sname[-1:]
+                auto = (sval == 'true')
+                self._remove_rc(name, rlvl)
+                self._link_rc(name, rlvl, auto)
+                self.runlevels[name][rlvl] = (auto,
+                        self.runlevels[name][rlvl][1])
     
     def _get_runlevel_info(self):
         """Parse /etc/rc?.d and store symlink information.
@@ -116,7 +126,7 @@ class ServiceBackend(ServiceBase):
         runlevel: (bool start, int priority) pairs with found information.
         """
         svcs = {}
-        for runlevel in range(0, 7):
+        for runlevel in ('0', '1', '2', '3', '4', '5', '6', '7', 'S'):
             for root, dirs, files in os.walk('/etc/rc{0}.d'.format(runlevel)):
                 for svc in files:
                     path = os.path.join(root, svc)
@@ -147,7 +157,7 @@ class ServiceBackend(ServiceBase):
     
     def _get_current_runlevel(self):
         out = Popen(['/sbin/runlevel'], stdout=PIPE).communicate()[0]
-        return int(out.split()[1])
+        return out.split()[1]
     
     def _get_lsb_properties(self, name):
         """
