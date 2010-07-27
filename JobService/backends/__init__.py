@@ -104,6 +104,10 @@ class ServiceProxy(ServiceBase):
         self.bkmap[name].stop_service(name)
         log.info("Stopped {0}".format(name))
     
+    def set_service_automatic(self, name, auto):
+        self.bkmap[name].set_service_automatic(name, auto)
+        log.info("Set {0} to {1}".format(name, 'auto' if auto else 'manual'))
+    
     def get_service_settings(self, name, lang=''):
         settings = []
         snames = []
