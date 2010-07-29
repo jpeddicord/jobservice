@@ -102,6 +102,10 @@ class ServiceSettings:
         Read or write (if write is not None) a raw value to a conf file.
         read & write are file objects.
         
+        If the setting line has been commented, it will still be read normally.
+        On write, the comment will be removed. Default settings are assumed
+        to be commented out, so when changing them we'll need to uncomment.
+        
         If "prescan" is set, will not begin scanning until the string provided
         has been passed.
         """
@@ -116,10 +120,10 @@ class ServiceSettings:
             beforepos = line.find(before)
             # the last check is to make sure this is the right line,
             # but we only perform it if we _might_ have it for speed.
-            if scanning and beforepos >= 0 and line.lstrip().find(before) == 0:
+            if scanning and beforepos >= 0 and line.lstrip(' #;\t').find(before) == 0:
                 if write:
-                    write.write(''.join((line[:beforepos],
-                            before, newval, after, '\n')))
+                    data = ''.join((line[:beforepos], before, newval, after, '\n'))
+                    write.write(data.lstrip('#;'))
                 else:
                     start = beforepos + len(before)
                     if after:
