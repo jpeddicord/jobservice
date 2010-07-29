@@ -13,6 +13,7 @@
 
 <!ELEMENT parse (#PCDATA)>
 <!ATTLIST parse file CDATA #IMPLIED>
+<!ATTLIST parse after CDATA #IMPLIED>
 <!ATTLIST parse get CDATA #IMPLIED>
 <!ATTLIST parse set CDATA #IMPLIED>
 

@@ -50,9 +50,10 @@ class ServiceSettings:
             else:
                 for p in ele.findall('data/parse'):
                     fname = p.get('file')
+                    prescan = p.get('after')
                     if fname:
                         with open(fname) as f:
-                            raw = self._raw_value(p.text, f)
+                            raw = self._raw_value(p.text, f, prescan=prescan)
         # get available values
         values = []
         self.settings[name] = raw
@@ -82,10 +83,11 @@ class ServiceSettings:
             # write to file
             if p.get('file'):
                 filename = p.get('file')
+                prescan = p.get('after')
                 # write the new values
                 read = open(filename)
                 write = open('{0}.new'.format(filename), 'w')
-                self._raw_value(p.text, read, write, newval)
+                self._raw_value(p.text, read, write, newval, prescan)
                 write.close()
                 read.close()
                 # replace the original with backup
@@ -95,19 +97,26 @@ class ServiceSettings:
             elif p.get('set'):
                 pass #TODO
     
-    def _raw_value(self, parse, read, write=None, newval=None):
+    def _raw_value(self, parse, read, write=None, newval=None, prescan=None):
         """
         Read or write (if write is not None) a raw value to a conf file.
         read & write are file objects.
+        
+        If "prescan" is set, will not begin scanning until the string provided
+        has been passed.
         """
         assert parse
         before, after = parse.strip().split('%s')
         value = False
+        scanning = False if prescan else True
         for line in read:
+            if prescan:
+                if line.find(prescan):
+                    scanning = True
             beforepos = line.find(before)
-            # the second check is to make sure this is the right line,
+            # the last check is to make sure this is the right line,
             # but we only perform it if we _might_ have it for speed.
-            if beforepos >= 0 and line.strip().find(before) == 0:
+            if scanning and beforepos >= 0 and line.lstrip().find(before) == 0:
                 if write:
                     write.write(''.join((line[:beforepos],
                             before, newval, after, '\n')))
