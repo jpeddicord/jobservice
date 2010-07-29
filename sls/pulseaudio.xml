@@ -5,14 +5,15 @@
 <settings>
     <setting type="bool" name="system">
         <description>System mode</description>
-        <file>/etc/default/pulseaudio</file>
-        <parse>PULSEAUDIO_SYSTEM_START=%s</parse>
+        <data>
+            <parse file="/etc/default/pulseaudio">PULSEAUDIO_SYSTEM_START=%s</parse>
+        </data>
         <values>
             <value name="true">
-                <data>1</data>
+                <raw>1</raw>
             </value>
             <value name="false">
-                <data>0</data>
+                <raw>0</raw>
             </value>
         </values>
     </setting>

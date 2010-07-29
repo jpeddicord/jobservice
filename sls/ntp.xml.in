@@ -5,7 +5,8 @@
 <settings>
     <setting name="server" type="str">
         <_description>NTP Server</_description>
-        <file>/etc/ntp.conf</file>
-        <parse>server %s</parse>
+        <data>
+            <parse file="/etc/ntp.conf">server %s</parse>
+        </data>
     </setting>
 </settings>

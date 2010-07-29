@@ -57,8 +57,6 @@ class ServiceBackend(ServiceBase):
                     info['stopon'].append(rlvl)
                 if rlvl == self.current:
                     info['automatic'] = start[0]
-        # we cannot reliably determine this, so we fudge by storing.
-        # XXX: actually, we can. check the exit code of a "status" call.
         p = Popen(['/etc/init.d/' + name, 'status'], stdout=PIPE, stderr=PIPE)
         p.communicate()   # eat stdout/stdin
         info['running'] = (p.returncode == 0)

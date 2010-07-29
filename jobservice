@@ -6,7 +6,7 @@ from gobject import threads_init, MainLoop
 from dbus import SystemBus
 from dbus.service import BusName
 from dbus.mainloop.glib import DBusGMainLoop
-from JobService import DBUS_PATH
+import JobService
 from JobService.root import RootJobService
 from JobService.util import IdleTimeout
 
@@ -23,13 +23,17 @@ logging.basicConfig(level=level, datefmt="%H:%M:%S",
 log = logging.getLogger('jobservice')
 log.debug("Starting up")
 
+# local sls
+if options.debug:
+    JobService.SLS_LOCAL = 'sls/{0}.xml'
+
 # start up!
 DBusGMainLoop(set_as_default=True)
 threads_init()
 loop = MainLoop()
 srv = RootJobService(
     BusName('com.ubuntu.JobService', bus=SystemBus()),
-    DBUS_PATH,
+    JobService.DBUS_PATH,
     idle=IdleTimeout(loop, 300),
     enforce=options.enforce
 )

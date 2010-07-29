@@ -5,20 +5,22 @@
 <settings>
     <setting name="port" type="int">
         <_description>Port</_description>
-        <file>/etc/ssh/sshd_config</file>
-        <parse>Port %s</parse>
+        <data>
+            <parse file="/etc/ssh/sshd_config">Port %s</parse>
+        </data>
         <values min="0" max="65535" />
     </setting>
     <setting name="x11" type="bool">
         <_description>X11 Forwarding</_description>
-        <file>/etc/ssh/sshd_config</file>
-        <parse>X11Forwarding %s</parse>
+        <data>
+            <parse file="/etc/ssh/sshd_config">X11Forwarding %s</parse>
+        </data>
         <values>
             <value name="true">
-                <data>yes</data>
+                <raw>yes</raw>
             </value>
             <value name="false">
-                <data>no</data>
+                <raw>no</raw>
             </value>
         </values>
     </setting>

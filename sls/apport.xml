@@ -5,14 +5,15 @@
 <settings>
     <setting type="bool" name="enable">
         <description>Enable crash reporting</description>
-        <file>/etc/default/apport</file>
-        <parse>enabled=%s</parse>
+        <data>
+            <parse file="/etc/default/apport">enabled=%s</parse>
+        </data>
         <values>
             <value name="true">
-                <data>1</data>
+                <raw>1</raw>
             </value>
             <value name="false">
-                <data>0</data>
+                <raw>0</raw>
             </value>
         </values>
     </setting>

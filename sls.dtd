@@ -2,16 +2,29 @@
 <!-- Distributed under the license of the jobservice project. -->
 
 <!ELEMENT settings (setting+)>
-<!ELEMENT setting (description,file,parse?,values?)>
+<!ELEMENT setting (description,data?,values?)>
 <!ATTLIST setting name CDATA #REQUIRED>
-<!ATTLIST setting type (bool|int|float|str|choice|file|dir|label|exec) #REQUIRED>
+<!ATTLIST setting type (bool|int|float|str|label|choice|file|dir|user|group|exec) #REQUIRED>
+
 <!ELEMENT description (#PCDATA)>
-<!ELEMENT file (#PCDATA)>
+
+<!ELEMENT data (parse*)>
+<!ATTLIST data val CDATA #IMPLIED>
+
 <!ELEMENT parse (#PCDATA)>
+<!ATTLIST parse file CDATA #IMPLIED>
+<!ATTLIST parse get CDATA #IMPLIED>
+<!ATTLIST parse set CDATA #IMPLIED>
 
 <!ELEMENT values (value*)>
 <!ATTLIST values min CDATA #IMPLIED>
 <!ATTLIST values max CDATA #IMPLIED>
-<!ELEMENT value (data,description?)>
+<!ATTLIST values sep CDATA #IMPLIED>
+<!ATTLIST values exist CDATA #IMPLIED>
+<!ATTLIST values useid CDATA #IMPLIED>
+
+<!ELEMENT value (raw,description?)>
 <!ATTLIST value name CDATA #REQUIRED>
-<!ELEMENT data (#PCDATA)>
+
+<!ELEMENT raw (#PCDATA)>
+

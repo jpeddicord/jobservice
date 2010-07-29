@@ -3,61 +3,68 @@
  "-//Ubuntu//DTD JobService Service-Level Settings 0.1//EN"
  "http://people.ubuntu.com/~jpeddicord/SLS/0.1/sls.dtd">
 <settings>
+    <setting type="exec" name="gufw">
+        <description>Manage your firewall</description>
+        <data val="gufw"/>
+    </setting>
     <setting type="bool" name="ipv6">
         <description>Use IPV6</description>
-        <file>/etc/default/ufw</file>
-        <parse>IPV6=%s</parse>
+        <data>
+            <parse file="/etc/default/ufw">IPV6=%s</parse>
+        </data>
         <values>
             <value name="true">
-                <data>yes</data>
+                <raw>yes</raw>
             </value>
             <value name="false">
-                <data>no</data>
+                <raw>no</raw>
             </value>
         </values>
     </setting>
     <setting type="choice" name="default_input_policy">
         <description>Default inbound policy</description>
-        <file>/etc/default/ufw</file>
-        <parse>DEFAULT_INPUT_POLICY="%s"</parse>
+        <data>
+            <parse file="/etc/default/ufw">DEFAULT_INPUT_POLICY="%s"</parse>
+        </data>
         <values>
             <value name="drop">
-                <data>DROP</data>
+                <raw>DROP</raw>
                 <description>Drop</description>
             </value>
             <value name="accept">
-                <data>ACCEPT</data>
+                <raw>ACCEPT</raw>
                 <description>Accept</description>
             </value>
             <value name="accept_no_track">
-                <data>ACCEPT_NO_TRACK</data>
+                <raw>ACCEPT_NO_TRACK</raw>
                 <description>Accept (no connection tracking)</description>
             </value>
             <value name="reject">
-                <data>REJECT</data>
+                <raw>REJECT</raw>
                 <description>Reject</description>
             </value>
         </values>
     </setting>
     <setting type="choice" name="default_output_policy">
         <description>Default outbound policy</description>
-        <file>/etc/default/ufw</file>
-        <parse>DEFAULT_OUTPUT_POLICY="%s"</parse>
+        <data>
+            <parse file="/etc/default/ufw">DEFAULT_OUTPUT_POLICY="%s"</parse>
+        </data>
         <values>
             <value name="drop">
-                <data>DROP</data>
+                <raw>DROP</raw>
                 <description>Drop</description>
             </value>
             <value name="accept">
-                <data>ACCEPT</data>
+                <raw>ACCEPT</raw>
                 <description>Accept</description>
             </value>
             <value name="accept_no_track">
-                <data>ACCEPT_NO_TRACK</data>
+                <raw>ACCEPT_NO_TRACK</raw>
                 <description>Accept (no connection tracking)</description>
             </value>
             <value name="reject">
-                <data>REJECT</data>
+                <raw>REJECT</raw>
                 <description>Reject</description>
             </value>
         </values>
