@@ -1,4 +1,4 @@
 [D-BUS Service]
 Name=com.ubuntu.JobService
-Exec=/usr/bin/jobservice
+Exec=/usr/sbin/jobservice
 User=root

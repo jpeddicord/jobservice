@@ -36,12 +36,12 @@ setup_info = dict(
     url='https://launchpad.net/jobservice',
     cmdclass={'install_fix_paths': install_fix_paths},
     packages=['JobService', 'JobService.backends'],
-    scripts=['jobservice'],
     data_files=[
         ('share/dbus-1/system-services/', ['com.ubuntu.JobService.service']),
         ('/etc/dbus-1/system.d/', ['com.ubuntu.JobService.conf']),
         ('share/polkit-1/actions/', ['com.ubuntu.jobservice.policy']),
         ('share/jobservice/default/', ['sls/{0}'.format(x) for x in listdir('sls')]),
+        ('sbin/', ['jobservice']),
     ],
 )
 
