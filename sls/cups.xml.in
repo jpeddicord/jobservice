@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC
+ "-//Ubuntu//DTD JobService Service-Level Settings 0.1//EN"
+ "http://people.ubuntu.com/~jpeddicord/SLS/0.1/sls.dtd">
+<settings>
+    <setting type="open" name="manage_web">
+        <_description>Manage CUPS</_description>
+        <data val="http://localhost:631/"/>
+    </setting>
+    <setting type="group" name="sysgroup">
+        <_description>System Group</_description>
+        <data>
+            <parse file="/etc/cups/cupsd.conf">SystemGroup %s</parse>
+        </data>
+    </setting>
+</settings>

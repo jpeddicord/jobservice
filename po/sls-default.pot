@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-29 22:15-0400\n"
+"POT-Creation-Date: 2010-07-30 14:50-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,14 @@ msgstr ""
 
 #: ../sls/apport.xml.in.h:1
 msgid "Enable crash reporting"
+msgstr ""
+
+#: ../sls/cups.xml.in.h:1
+msgid "Manage CUPS"
+msgstr ""
+
+#: ../sls/cups.xml.in.h:2
+msgid "System Group"
 msgstr ""
 
 #: ../sls/kerneloops.xml.in.h:1
