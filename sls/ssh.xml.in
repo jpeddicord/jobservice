@@ -24,4 +24,60 @@
             </value>
         </values>
     </setting>
+    <setting name="auth_password" type="bool">
+        <_description>Allow password authentication</_description>
+        <data>
+            <parse file="/etc/ssh/sshd_config">PasswordAuthentication %s</parse>
+        </data>
+        <values>
+            <value name="true">
+                <raw>yes</raw>
+            </value>
+            <value name="false">
+                <raw>no</raw>
+            </value>
+        </values>
+    </setting>
+    <setting name="auth_pubkey" type="bool">
+        <_description>Allow public key authentication</_description>
+        <data>
+            <parse file="/etc/ssh/sshd_config">PubkeyAuthentication %s</parse>
+        </data>
+        <values>
+            <value name="true">
+                <raw>yes</raw>
+            </value>
+            <value name="false">
+                <raw>no</raw>
+            </value>
+        </values>
+    </setting>
+    <setting name="permitroot" type="bool">
+        <_description>Permit remote root login</_description>
+        <data>
+            <parse file="/etc/ssh/sshd_config">PermitRootLogin %s</parse>
+        </data>
+        <values>
+            <value name="true">
+                <raw>yes</raw>
+            </value>
+            <value name="false">
+                <raw>no</raw>
+            </value>
+        </values>
+    </setting>
+    <setting name="keepalive" type="bool">
+        <_description>Keep idle connections alive</_description>
+        <data>
+            <parse file="/etc/ssh/sshd_config">TCPKeepAlive %s</parse>
+        </data>
+        <values>
+            <value name="true">
+                <raw>yes</raw>
+            </value>
+            <value name="false">
+                <raw>no</raw>
+            </value>
+        </values>
+    </setting>
 </settings>

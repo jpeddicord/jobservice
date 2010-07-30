@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-30 14:50-0400\n"
+"POT-Creation-Date: 2010-07-30 15:20-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,10 +41,26 @@ msgid "System mode"
 msgstr ""
 
 #: ../sls/ssh.xml.in.h:1
-msgid "Port"
+msgid "Allow password authentication"
 msgstr ""
 
 #: ../sls/ssh.xml.in.h:2
+msgid "Allow public key authentication"
+msgstr ""
+
+#: ../sls/ssh.xml.in.h:3
+msgid "Keep idle connections alive"
+msgstr ""
+
+#: ../sls/ssh.xml.in.h:4
+msgid "Permit remote root login"
+msgstr ""
+
+#: ../sls/ssh.xml.in.h:5
+msgid "Port"
+msgstr ""
+
+#: ../sls/ssh.xml.in.h:6
 msgid "X11 Forwarding"
 msgstr ""
 
