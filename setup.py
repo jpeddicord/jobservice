@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from os import listdir
+from os.path import exists
 from subprocess import Popen, PIPE
 from distutils.core import setup
 from distutils.command.install import install
@@ -56,6 +57,10 @@ with open('JobService/info.py', 'w') as f:
     for item in ('name', 'version', 'author', 'author_email', 'url'):
         f.write("%s = '%s'\n" % (item, setup_info[item]))
     f.write("prefix = '/usr'\n") # overwritten by fix_paths
+
+# update translations if available (needed for branch builds)
+if exists('./translations.sh'):
+    Popen(['./translations.sh']).communicate()
 
 install.sub_commands.append(('install_fix_paths', None))
 setup(**setup_info)
