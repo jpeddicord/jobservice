@@ -36,10 +36,11 @@ level = logging.DEBUG if options.debug else logging.INFO
 logging.basicConfig(level=level, datefmt="%H:%M:%S",
         format="%(asctime)s %(name)s %(levelname)s: %(message)s")
 log = logging.getLogger('jobservice')
-log.debug("Starting up")
+log.debug('Starting up')
 
 # local sls
 if options.debug:
+    log.debug('Using local SLS definitions')
     JobService.SLS_LOCAL = 'sls/{0}.xml'
 
 # start up!

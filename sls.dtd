@@ -4,7 +4,7 @@
 <!ELEMENT settings (setting+)>
 <!ELEMENT setting (description,data?,values?)>
 <!ATTLIST setting name CDATA #REQUIRED>
-<!ATTLIST setting type (bool|int|float|str|label|choice|file|dir|user|group|exec) #REQUIRED>
+<!ATTLIST setting type (bool|int|float|str|label|choice|file|dir|user|group|exec|open) #REQUIRED>
 
 <!ELEMENT description (#PCDATA)>
 
