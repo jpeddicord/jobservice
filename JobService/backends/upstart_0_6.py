@@ -91,6 +91,9 @@ class ServiceBackend(ServiceBase):
             info['running'] = (inst_props['state'] == 'running')
             if inst_props['processes']:
                 info['pid'] = inst_props['processes'][0][1]
+        # differentiate instances in descriptions
+        if inst_name and 'description' in props:
+            props['description'] += " ({0})".format(inst_name)
         info.update(props)
         return info
     
