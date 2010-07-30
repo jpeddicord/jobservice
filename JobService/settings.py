@@ -129,8 +129,8 @@ class ServiceSettings:
         value = False
         scanning = False if prescan else True
         for line in read:
-            if prescan:
-                if line.find(prescan):
+            if not scanning and prescan:
+                if line.find(prescan) != -1:
                     scanning = True
             beforepos = line.find(before)
             # the last check is to make sure this is the right line,
@@ -149,4 +149,4 @@ class ServiceSettings:
                 continue
             if write:
                 write.write(line)
-        
+        return ''

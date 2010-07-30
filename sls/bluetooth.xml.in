@@ -4,9 +4,9 @@
  "http://people.ubuntu.com/~jpeddicord/SLS/0.1/sls.dtd">
 <settings>
     <setting type="bool" name="initially_powered">
-        <description>Active on boot</description>
+        <_description>Active on boot</_description>
         <data>
-            <parse file="/etc/bluetooth/main.conf">InitiallyPowered %s</parse>
+            <parse file="/etc/bluetooth/main.conf">InitiallyPowered = %s</parse>
         </data>
         <values>
             <value name="true">
@@ -18,9 +18,9 @@
         </values>
     </setting>
     <setting type="bool" name="remember_powered">
-        <description>Remember powered state</description>
+        <_description>Remember powered state</_description>
         <data>
-            <parse file="/etc/bluetooth/main.conf">RememberPowered %s</parse>
+            <parse file="/etc/bluetooth/main.conf">RememberPowered = %s</parse>
         </data>
         <values>
             <value name="true">

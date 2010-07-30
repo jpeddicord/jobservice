@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC
+ "-//Ubuntu//DTD JobService Service-Level Settings 0.1//EN"
+ "http://people.ubuntu.com/~jpeddicord/SLS/0.1/sls.dtd">
+<settings>
+    <setting type="bool" name="enable_publish">
+        <_description>Enable publishing to network</_description>
+        <data>
+            <parse file="/etc/avahi/avahi-daemon.conf" after="[publish]">disable-publishing=%s</parse>
+        </data>
+        <values>
+            <value name="true">
+                <raw>no</raw>
+            </value>
+            <value name="false">
+                <raw>yes</raw>
+            </value>
+        </values>
+    </setting>
+</settings>

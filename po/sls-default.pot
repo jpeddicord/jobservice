@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-30 15:20-0400\n"
+"POT-Creation-Date: 2010-07-30 15:36-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,18 @@ msgstr ""
 
 #: ../sls/apport.xml.in.h:1
 msgid "Enable crash reporting"
+msgstr ""
+
+#: ../sls/avahi-daemon.xml.in.h:1
+msgid "Enable publishing to network"
+msgstr ""
+
+#: ../sls/bluetooth.xml.in.h:1
+msgid "Active on boot"
+msgstr ""
+
+#: ../sls/bluetooth.xml.in.h:2
+msgid "Remember powered state"
 msgstr ""
 
 #: ../sls/cups.xml.in.h:1
