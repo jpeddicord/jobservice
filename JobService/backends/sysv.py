@@ -82,6 +82,10 @@ class ServiceBackend(ServiceBase):
             check_call(['/etc/init.d/' + name, 'start'])
         except CalledProcessError, e:
             raise SysVException('Start failed: code {0}'.format(e.returncode))
+        try:
+            check_call(['/etc/init.d/' + name, 'status'], stdout=PIPE, stderr=PIPE)
+        except CalledProcessError, e:
+            raise SysVException('Service stopped running unexpectedly.')
     
     def stop_service(self, name):
         try:
