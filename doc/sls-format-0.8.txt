@@ -1,0 +1,29 @@
+===============================
+ Service-Level Settings Format
+===============================
+:Author: Jacob Peddicord <jpeddicord@ubuntu.com>
+:Description: SLS format 0.8 introduction and specification
+
+Introduction
+============
+
+Are you the maintainer (or interested developer) of a system service? Do you want to make certain aspects of your service easily configurable by system administrators and users, without the need to edit config files? You've come to the right place.
+
+This document describes the format of an SLS definition with examples and further instructions. After reading this, you should be able to write your own in no time. If you can't, then I've failed as a documentation writer and you should email me directly for help.
+
+XML Format
+==========
+
+
+
+Translation
+===========
+
+Distribution
+============
+
+With your service
+-----------------
+
+With jobservice
+---------------
