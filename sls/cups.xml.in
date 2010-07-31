@@ -7,10 +7,10 @@
         <_description>Manage CUPS</_description>
         <data val="http://localhost:631/"/>
     </setting>
-    <setting type="group" name="sysgroup">
+    <setting type="group" name="SystemGroup">
         <_description>System Group</_description>
         <data>
-            <parse file="/etc/cups/cupsd.conf">SystemGroup %s</parse>
+            <parse file="/etc/cups/cupsd.conf">%n %s</parse>
         </data>
     </setting>
 </settings>

@@ -3,10 +3,10 @@
  "-//Ubuntu//DTD JobService Service-Level Settings 0.1//EN"
  "http://people.ubuntu.com/~jpeddicord/SLS/0.1/sls.dtd">
 <settings>
-    <setting type="bool" name="initially_powered">
+    <setting type="bool" name="InitiallyPowered">
         <_description>Active on boot</_description>
         <data>
-            <parse file="/etc/bluetooth/main.conf">InitiallyPowered = %s</parse>
+            <parse file="/etc/bluetooth/main.conf">%n = %s</parse>
         </data>
         <values>
             <value name="true">
@@ -17,10 +17,10 @@
             </value>
         </values>
     </setting>
-    <setting type="bool" name="remember_powered">
+    <setting type="bool" name="RememberPowered">
         <_description>Remember powered state</_description>
         <data>
-            <parse file="/etc/bluetooth/main.conf">RememberPowered = %s</parse>
+            <parse file="/etc/bluetooth/main.conf">%n = %s</parse>
         </data>
         <values>
             <value name="true">

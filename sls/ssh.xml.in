@@ -3,17 +3,17 @@
  "-//Ubuntu//DTD JobService Service-Level Settings 0.1//EN"
  "http://people.ubuntu.com/~jpeddicord/SLS/0.1/sls.dtd">
 <settings>
-    <setting name="port" type="int">
+    <setting name="Port" type="int">
         <_description>Port</_description>
         <data>
-            <parse file="/etc/ssh/sshd_config">Port %s</parse>
+            <parse file="/etc/ssh/sshd_config">%n %s</parse>
         </data>
         <values min="0" max="65535" />
     </setting>
-    <setting name="x11" type="bool">
+    <setting name="X11Forwarding" type="bool">
         <_description>X11 Forwarding</_description>
         <data>
-            <parse file="/etc/ssh/sshd_config">X11Forwarding %s</parse>
+            <parse file="/etc/ssh/sshd_config">%n %s</parse>
         </data>
         <values>
             <value name="true">
@@ -24,10 +24,10 @@
             </value>
         </values>
     </setting>
-    <setting name="auth_password" type="bool">
+    <setting name="PasswordAuthentication" type="bool">
         <_description>Allow password authentication</_description>
         <data>
-            <parse file="/etc/ssh/sshd_config">PasswordAuthentication %s</parse>
+            <parse file="/etc/ssh/sshd_config">%n %s</parse>
         </data>
         <values>
             <value name="true">
@@ -38,10 +38,10 @@
             </value>
         </values>
     </setting>
-    <setting name="auth_pubkey" type="bool">
+    <setting name="PubkeyAuthentication" type="bool">
         <_description>Allow public key authentication</_description>
         <data>
-            <parse file="/etc/ssh/sshd_config">PubkeyAuthentication %s</parse>
+            <parse file="/etc/ssh/sshd_config">%n %s</parse>
         </data>
         <values>
             <value name="true">
@@ -52,10 +52,10 @@
             </value>
         </values>
     </setting>
-    <setting name="permitroot" type="bool">
+    <setting name="PermitRootLogin" type="bool">
         <_description>Permit remote root login</_description>
         <data>
-            <parse file="/etc/ssh/sshd_config">PermitRootLogin %s</parse>
+            <parse file="/etc/ssh/sshd_config">%n %s</parse>
         </data>
         <values>
             <value name="true">
@@ -66,10 +66,10 @@
             </value>
         </values>
     </setting>
-    <setting name="keepalive" type="bool">
+    <setting name="TCPKeepAlive" type="bool">
         <_description>Keep idle connections alive</_description>
         <data>
-            <parse file="/etc/ssh/sshd_config">TCPKeepAlive %s</parse>
+            <parse file="/etc/ssh/sshd_config">%n %s</parse>
         </data>
         <values>
             <value name="true">

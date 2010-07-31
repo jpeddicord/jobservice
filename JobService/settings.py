@@ -53,12 +53,11 @@ class ServiceSettings:
     
     def get_setting(self, name, lang=''):
         """Return details of a specific setting by name in the format:
-        (name, type, description, current value, possible values[],
-                constraints{})
+        (name, type, description, current, possible[], constraints{})
         """
         ele = self.selements[name]
         # current value
-        raw = ""
+        raw = ''
         data = ele.find('data')
         if data != None:
             fixed = data.get('val')
@@ -67,20 +66,18 @@ class ServiceSettings:
             else:
                 # find the first source we can obtain a value from
                 for p in ele.findall('data/parse'):
+                    parse = p.text.replace('%n', name)
                     # load from file
                     if p.get('file'):
                         prescan = p.get('after')
                         with open(p.get('file')) as f:
-                            raw = self._raw_value(p.text, f, prescan=prescan)
+                            raw = self._raw_value(parse, f, prescan=prescan)
                         break
                     # load from external helper
                     elif p.get('get'):
-                        print "helper", p.get('get')
                         proc = Popen(p.get('get'), shell=True, stdout=PIPE)
-                        out = proc.communicate()[0]
-                        print out
-                        sio = StringIO(out)
-                        raw = self._raw_value(p.text, sio)
+                        sio = StringIO(proc.communicate()[0])
+                        raw = self._raw_value(parse, sio)
                         break
         # get available values
         values = []
@@ -108,6 +105,7 @@ class ServiceSettings:
                 break
         # write out values
         for p in data.findall('parse'):
+            parse = p.text.replace('%n', name)
             # write to file
             if p.get('file'):
                 filename = p.get('file')
@@ -115,7 +113,7 @@ class ServiceSettings:
                 # write the new values
                 read = open(filename)
                 write = open('{0}.new'.format(filename), 'w')
-                self._raw_value(p.text, read, write, newval, prescan)
+                self._raw_value(parse, read, write, newval, prescan)
                 write.close()
                 read.close()
                 # replace the original with backup
@@ -124,7 +122,7 @@ class ServiceSettings:
             # send to an external program for processing
             elif p.get('set'):
                 proc = Popen(p.get('set'), shell=True, stdin=PIPE)
-                proc.communicate(p.text.replace('%s', newval))
+                proc.communicate(parse.replace('%s', newval))
     
     def _raw_value(self, parse, read, write=None, newval=None, prescan=None):
         """
