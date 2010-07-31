@@ -17,6 +17,8 @@
 import logging
 from os import rename
 from os.path import exists
+from cStringIO import StringIO
+from subprocess import Popen, PIPE
 from xml.etree.cElementTree import ElementTree
 import JobService
 
@@ -63,12 +65,23 @@ class ServiceSettings:
             if fixed:
                 raw = fixed
             else:
+                # find the first source we can obtain a value from
                 for p in ele.findall('data/parse'):
-                    fname = p.get('file')
-                    prescan = p.get('after')
-                    if fname:
-                        with open(fname) as f:
+                    # load from file
+                    if p.get('file'):
+                        prescan = p.get('after')
+                        with open(p.get('file')) as f:
                             raw = self._raw_value(p.text, f, prescan=prescan)
+                        break
+                    # load from external helper
+                    elif p.get('get'):
+                        print "helper", p.get('get')
+                        proc = Popen(p.get('get'), shell=True, stdout=PIPE)
+                        out = proc.communicate()[0]
+                        print out
+                        sio = StringIO(out)
+                        raw = self._raw_value(p.text, sio)
+                        break
         # get available values
         values = []
         self.settings[name] = raw
@@ -110,7 +123,8 @@ class ServiceSettings:
                 rename(write.name, read.name)
             # send to an external program for processing
             elif p.get('set'):
-                pass #TODO
+                proc = Popen(p.get('set'), shell=True, stdin=PIPE)
+                proc.communicate(p.text.replace('%s', newval))
     
     def _raw_value(self, parse, read, write=None, newval=None, prescan=None):
         """
