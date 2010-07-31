@@ -4,6 +4,8 @@
 :Author: Jacob Peddicord <jpeddicord@ubuntu.com>
 :Description: SLS format 0.8 introduction and specification
 
+.. contents::
+
 Introduction
 ============
 
@@ -14,7 +16,87 @@ This document describes the format of an SLS definition with examples and furthe
 XML Format
 ==========
 
+I'm going to assume you have at least basic knowledge of XML. If you don't know what XML is, just think of HTML, but more mundane. A basic SLS XML file looks something like this::
 
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE settings PUBLIC
+     "-//Ubuntu//DTD JobService Service-Level Settings 0.8//EN"
+     "http://people.ubuntu.com/~jpeddicord/SLS/0.8/sls.dtd">
+    <settings>
+        <setting name="setting_name" type="setting_type">
+            <description>Some descriptive name</description>
+            <data>
+                <parse file="some_filename">%n=%s</parse>
+            </data>
+            <values>
+                <value name="true">
+                    <raw>1</raw>
+                    <description>A description for this value</description>
+                </value>
+                <value name="false">
+                    <raw>0</raw>
+                </value>
+                ...
+            </values>
+        </setting>
+        
+        ...
+    </settings>
+
+Let's break this down a little. The first four lines are standard XML practice: the XML and DOCTYPE tags. Always keep these present in your file. Nothing bad should happen with jobservice if they're not there, but the standards police may arrive on your doorstep and take you away.
+
+Next up is the <settings> element. This **must** be present or nothing's going to read your file.
+
+Inside the <settings> tag is a <setting> (singular) tag. Any number of <setting> tags can be present inside <settings>. A setting tag has two required attributes: ``name`` and ``type``. ``name`` must be a unique name for this setting within the file. ``type`` tells jobservice what it should be expecting. We'll talk more about types shortly.
+
+Inside an individual <setting> tag are three elements: <description>, <data>, and <values>. Only <description> is actually required, meaning this is valid::
+
+    <setting name="group_warning" type="label">
+        <description>The following settings may break things.</description>
+    </setting>
+
+That's usually not very useful, though, as it doesn't really do anything. (It's really only for the ``label`` type, which I'll describe later.)
+
+<data> tells jobservice where it can find and save the actual settings it changes. This will be covered in the Data section below.
+
+<values> describes possible values a particular setting can take. Covered in the Values section.
+
+Data
+----
+
+Values
+------
+
+Constraints
+~~~~~~~~~~~
+
+Type Reference
+--------------
+
+This is the main portion of this document. Different types have different requirements. If you're looking for a specific type, just locate the relevant section and read the details for information on how to use it.
+
+.. contents:: :local:
+
+bool
+~~~~
+
+int and float
+~~~~~~~~~~~~~
+
+str
+~~~
+
+label
+~~~~~
+
+choice
+~~~~~~
+
+file and dir
+~~~~~~~~~~~~
+
+user and group
+~~~~~~~~~~~~~~
 
 Translation
 ===========
