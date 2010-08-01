@@ -13,6 +13,8 @@ Are you the maintainer (or interested developer) of a system service? Do you wan
 
 This document describes the format of an SLS definition with examples and further instructions. After reading this, you should be able to write your own in no time. If you can't, then I've failed as a documentation writer and you should email me directly for help.
 
+Examples are provided throughout the document. This is intended to be read from the top, but if you just want to start hacking you may be able to jump straight to Types_ for a quick reference.
+
 XML Format
 ==========
 
@@ -57,9 +59,9 @@ Inside an individual <setting> tag are three elements: <description>, <data>, an
 
 That's usually not very useful, though, as it doesn't really do anything. (It's really only for the ``label`` type, which I'll describe later.)
 
-<data> tells jobservice where it can find and save the actual settings it changes. This will be covered in the Data section below.
+<data> tells jobservice where it can find and save the actual settings it changes. This will be covered in the Data_ section below.
 
-<values> describes possible values a particular setting can take. Covered in the Values section.
+<values> describes possible values a particular setting can take. Covered in the Values_ section.
 
 Data
 ----
@@ -74,6 +76,8 @@ The data section tells jobservice where to look for the setting value and where 
     </data>
 
 This tells the parser to look in ``/etc/config/file`` for a line that has ``SOME_OPTION = ``, followed by the actual value it will pick up. So, if that file has ``SOME_OPTION = sega`` in it, then the value returned by jobservice will be ``sega``. When the user changes this value, it is written back to the file in the same place.
+
+At this point, unless your configuration is more complex, you may want to skip the rest of this section and continue to Values_.
 
 Multiple Locations
 ~~~~~~~~~~~~~~~~~~
@@ -132,13 +136,42 @@ In this case the tag is self-closing. As previously mentioned, if you're using a
 Values
 ------
 
+The <values> tag is a tricky thing to get, but is a very powerful tool to use once you know how to wield it. Similar to <settings>, <values> contains any number of <value> tags, including none at all.
+
+The usage of a <value> tag varies greatly with the setting type (see Types_), but I'll give you a basic overview here. Let's start by example::
+
+    <values>
+        <value name="true">
+            <raw>1</raw>
+        </value>
+        <value name="false">
+            <raw>0</raw>
+        </value>
+    </values>
+
+This is common to see for a ``bool`` type. Basically, this states that when the value for this is determined to be ``true`` (i.e. the checkbox in the interface is active), then a value of ``1`` will be written to the file (see Data_ for information on how). When the value is ``false``, a ``0`` is written.
+
+The key point to understand here is that the value parser is a **translator** between the user and the raw file data. Any value sent from the user or read from a file can be translated. This allows you to do some neat things, but also very nasty things. While you could translate ``str`` values from the user, this would be a *very bad* thing to do.
+
+When writing value sections, be sure to pay close attention to what is needed for the type of setting you are using. Don't stray from that and you should be fine.
+
 Constraints
 ~~~~~~~~~~~
+
+Values allow some constraints to be suggested. This is the responsibility of the client program to implement, and can even be ignored -- but that might compromise the stability of your system if an invalid value is entered.
+
+Constraints are just attributes on the main <values> tag::
+
+    <values min="80" max="600" />
+    
+The above would be useful for an ``int`` setting. Note that constraints can be used regardless if there are values present or if the tag is empty (and thus self-closing, as in this example).
+
+Again, pay attention to what constraints are available for the specific type you are working with and you should have no problems.
 
 Type Reference
 --------------
 
-This is the main portion of this document. Different types have different requirements. If you're looking for a specific type, just locate the relevant section and read the details for information on how to use it.
+This is the main portion of this document. Different types have different requirements, and types effect the display of information to the user in client programs. If you're looking for a specific type, just locate the relevant section and read the details for information on how to use it.
 
 .. contents:: :local:
 
