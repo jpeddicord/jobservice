@@ -75,9 +75,11 @@ The data section tells jobservice where to look for the setting value and where 
         <parse file="/etc/config/file">SOME_OPTION = %s</parse>
     </data>
 
-This tells the parser to look in ``/etc/config/file`` for a line that has ``SOME_OPTION = ``, followed by the actual value it will pick up. So, if that file has ``SOME_OPTION = sega`` in it, then the value returned by jobservice will be ``sega``. When the user changes this value, it is written back to the file in the same place.
+This tells the parser to look in ``/etc/config/file`` for a line that has ``SOME_OPTION =``, followed by the actual value it will pick up. So, if that file has ``SOME_OPTION = sega`` in it, then the value returned by jobservice will be ``sega``. When the user changes this value, it is written back to the file in the same place.
 
-At this point, unless your configuration is more complex, you may want to skip the rest of this section and continue to Values_.
+Keep in mind that values are only parsed on a single line. If you need multiple line support, you may want to use a helper script (see `External Helpers`_).
+
+At this point, unless your configuration is more complex, you may want to skip the rest of this section and continue to `Setting Values`_.
 
 Multiple Locations
 ~~~~~~~~~~~~~~~~~~
@@ -251,7 +253,21 @@ A setting named ``Port`` of type ``int`` is created. Its description is simply "
 str
 ~~~
 
+A ``str`` is a simple text string. jobs-admin renders this as a text box. If a client program isn't sure how to render another type, it may treat it as a ``str``.
 
+Example
+'''''''
+
+::
+
+    <setting type="str" name="server">
+        <description>NTP Server</description>
+        <data>
+            <parse file="/etc/ntp.conf">%n %s</parse>
+        </data>
+    </setting>
+
+Hopefully simple enough: a ``str`` setting named ``server`` with a description of ``NTP Server``. Stored in ``/etc/ntp.conf`` as ``server %s``.
 
 label
 ~~~~~

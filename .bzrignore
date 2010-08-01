@@ -6,3 +6,4 @@ build
 po/POTFILES.in
 run
 sls/*.xml
+doc/*.html

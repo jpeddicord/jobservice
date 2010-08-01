@@ -1,0 +1,5 @@
+body { font: 10pt sans-serif; }
+div.contents { font-size: 0.9em; }
+div.section { margin-left: 30px; }
+a.toc-backref { text-decoration: none; color: #000; }
+pre.literal-block { padding: 10px; border: 1px solid #ccc; background-color: #eee; }
