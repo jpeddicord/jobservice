@@ -13,7 +13,7 @@ Are you the maintainer (or interested developer) of a system service? Do you wan
 
 This document describes the format of an SLS definition with examples and further instructions. After reading this, you should be able to write your own in no time. If you can't, then I've failed as a documentation writer and you should email me directly for help.
 
-Examples are provided throughout the document. This is intended to be read from the top, but if you just want to start hacking you may be able to jump straight to Types_ for a quick reference.
+Examples are provided throughout the document. This is intended to be read from the top, but if you just want to start hacking you may be able to jump straight to the `Type Reference`_ for a quick reference.
 
 XML Format
 ==========
@@ -61,7 +61,7 @@ That's usually not very useful, though, as it doesn't really do anything. (It's 
 
 <data> tells jobservice where it can find and save the actual settings it changes. This will be covered in the Data_ section below.
 
-<values> describes possible values a particular setting can take. Covered in the Values_ section.
+<values> describes possible values a particular setting can take. Covered in the `Setting Values`_ section.
 
 Data
 ----
@@ -133,12 +133,12 @@ Lastly, a data tag can also have a fixed value. This is really only useful for t
 
 In this case the tag is self-closing. As previously mentioned, if you're using a ``label`` type, you can omit the <data> tag entirely.
 
-Values
-------
+Setting Values
+--------------
 
 The <values> tag is a tricky thing to get, but is a very powerful tool to use once you know how to wield it. Similar to <settings>, <values> contains any number of <value> tags, including none at all.
 
-The usage of a <value> tag varies greatly with the setting type (see Types_), but I'll give you a basic overview here. Let's start by example::
+The usage of a <value> tag varies greatly with the setting type (see the `Type Reference`_), but I'll give you a basic overview here. Let's start by example::
 
     <values>
         <value name="true">
@@ -151,12 +151,19 @@ The usage of a <value> tag varies greatly with the setting type (see Types_), bu
 
 This is common to see for a ``bool`` type. Basically, this states that when the value for this is determined to be ``true`` (i.e. the checkbox in the interface is active), then a value of ``1`` will be written to the file (see Data_ for information on how). When the value is ``false``, a ``0`` is written.
 
-The key point to understand here is that the value parser is a **translator** between the user and the raw file data. Any value sent from the user or read from a file can be translated. This allows you to do some neat things, but also very nasty things. While you could translate ``str`` values from the user, this would be a *very bad* thing to do.
+The key point to understand here is that the value parser is a **translator** between the user and the raw file data. The text in the ``name`` attribute is what is sent to and received from the client, and the ``raw`` tag text is what is written to or read from the file. Any value sent from the user or read from a file can be translated. This allows you to do some neat things, but also very nasty things. While you could translate ``str`` values from the user, this would be a *very bad* thing to do.
+
+<description> can be used inside value tags when necessary (depends on the type)::
+
+    <value name="two">
+        <description>Second item</description>
+        <raw>2</raw>
+    </value>
 
 When writing value sections, be sure to pay close attention to what is needed for the type of setting you are using. Don't stray from that and you should be fine.
 
-Constraints
-~~~~~~~~~~~
+Value Constraints
+~~~~~~~~~~~~~~~~~
 
 Values allow some constraints to be suggested. This is the responsibility of the client program to implement, and can even be ignored -- but that might compromise the stability of your system if an invalid value is entered.
 
@@ -178,11 +185,73 @@ This is the main portion of this document. Different types have different requir
 bool
 ~~~~
 
+A ``bool`` type is a simple true/false setting. This is represented in jobs-admin as a checkbox.
+
+Values
+''''''
+
+``true`` and ``false`` are the client values, and need to be translated into raw values for writing.
+
+Example
+'''''''
+
+::
+
+    <setting name="enabled" type="bool">
+        <description>Enable this setting</description>
+        <data>
+            <parse file="/etc/myfile">SettingEnabled %s</parse>
+        </data>
+        <values>
+            <value name="true">
+                <raw>yes</raw>
+            </value>
+            <value name="false">
+                <raw>no</raw>
+            </value>
+        </values>
+    </setting>
+
+This creates a setting of type ``bool`` named ``enabled`` with a description of "Enable this setting." The data is stored in ``/etc/myfile`` in the format ``SettingEnabled %s``. ``true`` is translated into ``yes`` (``SettingEnabled yes`` is written) and ``false`` becomes ``no``.
+
 int/float
 ~~~~~~~~~
 
+An ``int`` corresponds to an unsigned integer, and ``float`` corresponds to a decimal. jobs-admin renders these as GtkSpinButton widgets.
+
+Values
+''''''
+
+It is not necessary to provide translated values for these types. However, constraints may be used on an empty <values> tag.
+
+Constraints
+```````````
+
+min
+    Minimum value accepted.
+
+max
+    Maximum value accepted.
+
+Example
+'''''''
+
+::
+
+    <setting type="int" name="Port">
+        <description>Port</description>
+        <data>
+            <parse file="/etc/ssh/sshd_config">%n %s</parse>
+        </data>
+        <values min="0" max="65535"/>
+    </setting>
+
+A setting named ``Port`` of type ``int`` is created. Its description is simply "Port." The value is written to ``/etc/ssh/sshd_config`` using the format ``%n %s`` (or: ``Port %s``). A minimum value of ``0`` and a maximum of ``65535`` is set.
+
 str
 ~~~
+
+
 
 label
 ~~~~~
