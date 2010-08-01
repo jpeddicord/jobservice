@@ -272,6 +272,19 @@ Hopefully simple enough: a ``str`` setting named ``server`` with a description o
 label
 ~~~~~
 
+Perhaps the easiest setting to use, the ``label`` just displays some text. This cannot be configured by the user: it is for informational purposes.
+
+Example
+'''''''
+
+::
+
+    <setting type="label" name="some_info">
+        <description>Careful: fire is dangerous.</description>
+    </setting>
+    
+This will insert "Careful: fire is dangerous." as a setting. Because settings are displayed in the order present in the XML, you can use this to group some settings or show additional information about a setting.
+
 choice
 ~~~~~~
 
