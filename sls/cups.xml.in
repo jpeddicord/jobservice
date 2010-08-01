@@ -3,9 +3,9 @@
  "-//Ubuntu//DTD JobService Service-Level Settings 0.8//EN"
  "http://people.ubuntu.com/~jpeddicord/SLS/0.8/sls.dtd">
 <settings>
-    <setting type="open" name="manage_web">
+    <setting type="exec" name="manage_web">
         <_description>Manage CUPS</_description>
-        <data val="http://localhost:631/"/>
+        <data val="xdg-open 'http://localhost:631/'"/>
     </setting>
     <setting type="group" name="SystemGroup">
         <_description>System Group</_description>

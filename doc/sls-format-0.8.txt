@@ -64,6 +64,71 @@ That's usually not very useful, though, as it doesn't really do anything. (It's 
 Data
 ----
 
+Single File
+~~~~~~~~~~~
+
+The data section tells jobservice where to look for the setting value and where to store it when it changes. 90% of the time, it will look something like this::
+
+    <data>
+        <parse file="/etc/config/file">SOME_OPTION = %s</parse>
+    </data>
+
+This tells the parser to look in ``/etc/config/file`` for a line that has ``SOME_OPTION = ``, followed by the actual value it will pick up. So, if that file has ``SOME_OPTION = sega`` in it, then the value returned by jobservice will be ``sega``. When the user changes this value, it is written back to the file in the same place.
+
+Multiple Locations
+~~~~~~~~~~~~~~~~~~
+
+Multiple <parse> tags are accepted. In ``apache2``, for example, changing the server port requires it to be configured in multiple locations. Such a setup could be written as the following (simplified, this isn't actually correct for apache)::
+
+    <data>
+        <parse file="/etc/apache2/ports.conf">Listen %s</parse>
+        <parse file="/etc/apache2/sites-available/000-default.conf">VirtualHost *:%s</parse>
+    </data>
+
+With the above, when a value is changed, it is written to both of those files. (Note that jobservice only *reads* the value from the first, however.)
+
+External Helpers
+~~~~~~~~~~~~~~~~
+
+There are *very rare* cases where simply writing to a file is not enough. For that, there is the ability to call on external programs or helper scripts to fetch and set the value::
+
+    <data>
+        <parse get="/usr/lib/jobservice/my-helper">SomeSetting %s</parse>
+        <parse set="/usr/lib/jobservice/my-helper">SomeSetting=%s</parse>
+    </data>
+
+This calls ``my-helper`` and parses STDOUT for ``SomeSetting %s`` as is done for normal files.
+When saving, ``my-helper`` is called with STDIN set to ``SomeSetting=%s`` (with %s replaced with the value, of course), again much like how things are written with normal files. The scripts given in get/set **must have absolute paths** or jobservice may not be able to find them.
+Other than that, there are no real limitations: you can use extra arguments to scripts, get and set can be different programs, and you can even mix this with regular files as in the above examples. These are all rather advanced, however, and using regular files should cover most use cases.
+
+The "%n" shortcut
+~~~~~~~~~~~~~~~~~
+
+One very handy shortcut you can use inside <parse> tags is ``%n``, which is replaced with the name of the setting before parsing. So::
+
+    <setting name="MySetting" type="str">
+        <data>
+            <parse file="/some/file">MySetting = "%s"</parse>
+        ...
+
+is identical to::
+
+    <setting name="MySetting" type="str">
+        <data>
+            <parse file="/some/file">%n = "%s"</parse>
+        ...
+
+This can make your setting files more concise and reduce the work needed to write them (even if just by a small amount).
+
+Static values
+~~~~~~~~~~~~~
+
+Lastly, a data tag can also have a fixed value. This is really only useful for the ``exec`` type, but you may find other uses for it::
+
+    <data val="gufw" />
+
+In this case the tag is self-closing. As previously mentioned, if you're using a ``label`` type, you can omit the <data> tag entirely.
+
 Values
 ------
 
@@ -80,8 +145,8 @@ This is the main portion of this document. Different types have different requir
 bool
 ~~~~
 
-int and float
-~~~~~~~~~~~~~
+int/float
+~~~~~~~~~
 
 str
 ~~~
@@ -92,11 +157,16 @@ label
 choice
 ~~~~~~
 
-file and dir
-~~~~~~~~~~~~
+file/dir
+~~~~~~~~
 
-user and group
-~~~~~~~~~~~~~~
+user/group
+~~~~~~~~~~
+
+exec
+~~~~
+
+non-abs paths
 
 Translation
 ===========
