@@ -4,14 +4,18 @@
 :Author: Jacob Peddicord <jpeddicord@ubuntu.com>
 :Description: SLS format 0.8 introduction and specification
 
-.. contents::
+.. contents:: :depth: 3
 
 Introduction
 ============
 
 Are you the maintainer (or interested developer) of a system service? Do you want to make certain aspects of your service easily configurable by system administrators and users, without the need to edit config files? You've come to the right place.
 
-This document describes the format of an SLS definition with examples and further instructions. After reading this, you should be able to write your own in no time. If you can't, then I've failed as a documentation writer and you should email me directly for help.
+Service-Level Settings (SLS) is a small XML format that describes tunable settings about a service. It contains information on setting names and types, where and how they are stored, and how they should be presented to a user. This information is all loaded by jobservice, a system job management daemon. jobservice parses this information and sends details to client programs, such as jobs-admin, for rendering to the user.
+
+This document describes the format of an SLS definition with examples and further instructions. After reading this, you should be able to write your own in no time. If you can't, then I've failed as a documentation writer and you should email me directly for help. My email is located at the top of this document.
+
+If you've written a SLS file and want me to look over it or give some pointers, feel free to contact me.
 
 Examples are provided throughout the document. This is intended to be read from the top, but if you just want to start hacking you may be able to jump straight to the `Type Reference`_ for a quick reference.
 
@@ -155,6 +159,8 @@ This is common to see for a ``bool`` type. Basically, this states that when the 
 
 The key point to understand here is that the value parser is a **translator** between the user and the raw file data. The text in the ``name`` attribute is what is sent to and received from the client, and the ``raw`` tag text is what is written to or read from the file. Any value sent from the user or read from a file can be translated. This allows you to do some neat things, but also very nasty things. While you could translate ``str`` values from the user, this would be a *very bad* thing to do.
 
+We'll call this **value translation** in other parts of this document.
+
 <description> can be used inside value tags when necessary (depends on the type)::
 
     <value name="two">
@@ -183,6 +189,7 @@ Type Reference
 This is the main portion of this document. Different types have different requirements, and types effect the display of information to the user in client programs. If you're looking for a specific type, just locate the relevant section and read the details for information on how to use it.
 
 .. contents:: :local:
+              :depth: 1
 
 bool
 ~~~~
@@ -255,6 +262,8 @@ str
 
 A ``str`` is a simple text string. jobs-admin renders this as a text box. If a client program isn't sure how to render another type, it may treat it as a ``str``.
 
+Value translation should almost *never* be used here.
+
 Example
 '''''''
 
@@ -288,16 +297,115 @@ This will insert "Careful: fire is dangerous." as a setting. Because settings ar
 choice
 ~~~~~~
 
+A ``choice`` setting requires one of its values be selected. Rendered in jobs-admin as a combo box.
+
+Values
+''''''
+
+Value translation isn't important here, as most clients will render the description instead of the client value. You can make the value name the same as the raw text or different; it shouldn't matter for most cases.
+
+The <description> tag inside a <value> is strongly suggested here, as it will likely be rendered by the client::
+
+    <value name="some_choice">
+        <description>Some choice option</description>
+        <raw>choice_rawdata</raw>
+    </value>
+
+Example
+'''''''
+
+::
+
+    <setting type="choice" name="default_input_policy">
+        <description>Default inbound policy</description>
+        <data>
+            <parse file="/etc/default/ufw">DEFAULT_INPUT_POLICY="%s"</parse>
+        </data>
+        <values>
+            <value name="drop">
+                <raw>DROP</raw>
+                <description>Drop</description>
+            </value>
+            <value name="accept">
+                <raw>ACCEPT</raw>
+                <description>Accept</description>
+            </value>
+        </values>
+    </setting>
+
+Renders a ``choice`` setting named ``default_input_policy``. Stored in ``/etc/default/ufw`` in ``DEFAULT_INPUT_POLICY="%s"``. Two choices are available: Drop, and Accept. Selecting Drop will store ``DEFAULT_INPUT_POLICY="DROP"`` in the file, and ``DEFAULT_INPUT_POLICY="ACCEPT"`` for Accept.
+
 file/dir
 ~~~~~~~~
 
+A ``file`` or ``dir`` setting points to a file or directory on the system. Normally, this is rendered as a GtkFileChooserButton in jobs-admin, however it may render as a textbox if the ``exist`` constraint is ``false``.
+
+Values
+''''''
+
+Value translation should not be used. However, constraints are available:
+
+Constraints
+```````````
+
+exist
+    If ``true``, requires that the selected file or directory already exists on the system.
+    If ``false``, any filesystem location may be specified, existing or not.
+    Defaults to ``true``.
+
+Example
+'''''''
+
+::
+
+    <setting type="dir" name="log_location">
+        <description>Log location</description>
+        <data>
+            <parse file="/etc/someservice.conf">%n %s</parse>
+        </data>
+        <values exist="false" />
+    </setting>
+
+Creates a ``dir`` setting named ``log_location``, stored in ``/etc/someservice.conf`` as ``log_location %s``. The specified location doesn't have to exist; which implies that it is created on-demand by the service.
+
 user/group
 ~~~~~~~~~~
+
+
+
+Values
+''''''
+
+
+
+Constraints
+```````````
+
+useid
+    blah
+
+Example
+'''''''
+
+::
+
+    <>
+
+desc
 
 exec
 ~~~~
 
 non-abs paths
+
+Example
+'''''''
+
+::
+
+    <>
+
+desc
 
 Translation
 ===========
