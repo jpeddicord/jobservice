@@ -11,7 +11,7 @@ Introduction
 
 Are you the maintainer (or interested developer) of a system service? Do you want to make certain aspects of your service easily configurable by system administrators and users, without the need to edit config files? You've come to the right place.
 
-Service-Level Settings (SLS) is a small XML format that describes tunable settings about a service. It contains information on setting names and types, where and how they are stored, and how they should be presented to a user. This information is all loaded by jobservice, a system job management daemon. jobservice parses this information and sends details to client programs, such as jobs-admin, for rendering to the user.
+Service-Level Settings (SLS) is a small XML format that describes tunable settings about a service. It contains information on setting names and types, where and how they are stored, and how they should be presented to a user. This information is all loaded by jobservice, a system job management daemon. jobservice_ parses this information and sends details to client programs, such as jobs-admin_, for rendering to the user.
 
 This document describes the format of an SLS definition with examples and further instructions. After reading this, you should be able to write your own in no time. If you can't, then I've failed as a documentation writer and you should email me directly for help. My email is located at the top of this document.
 
@@ -26,7 +26,7 @@ I'm going to assume you have at least basic knowledge of XML. If you don't know 
 
     <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE settings PUBLIC
-     "-//Ubuntu//DTD JobService Service-Level Settings 0.8//EN"
+     "-//Ubuntu//DTD jobservice Service-Level Settings 0.8//EN"
      "http://people.ubuntu.com/~jpeddicord/SLS/0.8/sls.dtd">
     <settings>
         <setting name="setting_name" type="setting_type">
@@ -49,11 +49,11 @@ I'm going to assume you have at least basic knowledge of XML. If you don't know 
         ...
     </settings>
 
-Let's break this down a little. The first four lines are standard XML practice: the XML and DOCTYPE tags. Always keep these present in your file. Nothing bad should happen with jobservice if they're not there, but the standards police may arrive on your doorstep and take you away.
+Let's break this down a little. The first four lines are standard XML practice: the XML and DOCTYPE tags. Always keep these present in your file. Nothing bad should happen with jobservice_ if they're not there, but the standards police may arrive on your doorstep and take you away.
 
 Next up is the <settings> element. This **must** be present or nothing's going to read your file.
 
-Inside the <settings> tag is a <setting> (singular) tag. Any number of <setting> tags can be present inside <settings>. A setting tag has two required attributes: ``name`` and ``type``. ``name`` must be a unique name for this setting within the file. ``type`` tells jobservice what it should be expecting. We'll talk more about types shortly.
+Inside the <settings> tag is a <setting> (singular) tag. Any number of <setting> tags can be present inside <settings>. A setting tag has two required attributes: ``name`` and ``type``. ``name`` must be a unique name for this setting within the file. ``type`` tells jobservice_ what it should be expecting. We'll talk more about types shortly.
 
 Inside an individual <setting> tag are three elements: <description>, <data>, and <values>. Only <description> is actually required, meaning this is valid::
 
@@ -63,7 +63,7 @@ Inside an individual <setting> tag are three elements: <description>, <data>, an
 
 That's usually not very useful, though, as it doesn't really do anything. (It's really only for the ``label`` type, which I'll describe later.)
 
-<data> tells jobservice where it can find and save the actual settings it changes. This will be covered in the Data_ section below.
+<data> tells jobservice_ where it can find and save the actual settings it changes. This will be covered in the Data_ section below.
 
 <values> describes possible values a particular setting can take. Covered in the `Setting Values`_ section.
 
@@ -73,13 +73,13 @@ Data
 Single File
 ~~~~~~~~~~~
 
-The data section tells jobservice where to look for the setting value and where to store it when it changes. 90% of the time, it will look something like this::
+The data section tells jobservice_ where to look for the setting value and where to store it when it changes. 90% of the time, it will look something like this::
 
     <data>
         <parse file="/etc/config/file">SOME_OPTION = %s</parse>
     </data>
 
-This tells the parser to look in ``/etc/config/file`` for a line that has ``SOME_OPTION =``, followed by the actual value it will pick up. So, if that file has ``SOME_OPTION = sega`` in it, then the value returned by jobservice will be ``sega``. When the user changes this value, it is written back to the file in the same place.
+This tells the parser to look in ``/etc/config/file`` for a line that has ``SOME_OPTION =``, followed by the actual value it will pick up. So, if that file has ``SOME_OPTION = sega`` in it, then the value returned by jobservice_ will be ``sega``. When the user changes this value, it is written back to the file in the same place.
 
 Keep in mind that values are only parsed on a single line. If you need multiple line support, you may want to use a helper script (see `External Helpers`_).
 
@@ -95,7 +95,7 @@ Multiple <parse> tags are accepted. In ``apache2``, for example, changing the se
         <parse file="/etc/apache2/sites-available/000-default.conf">VirtualHost *:%s</parse>
     </data>
 
-With the above, when a value is changed, it is written to both of those files. (Note that jobservice only *reads* the value from the first, however.)
+With the above, when a value is changed, it is written to both of those files. (Note that jobservice_ only *reads* the value from the first, however.)
 
 External Helpers
 ~~~~~~~~~~~~~~~~
@@ -108,7 +108,7 @@ There are *very rare* cases where simply writing to a file is not enough. For th
     </data>
 
 This calls ``my-helper`` and parses STDOUT for ``SomeSetting %s`` as is done for normal files.
-When saving, ``my-helper`` is called with STDIN set to ``SomeSetting=%s`` (with %s replaced with the value, of course), again much like how things are written with normal files. The scripts given in get/set **must have absolute paths** or jobservice may not be able to find them.
+When saving, ``my-helper`` is called with STDIN set to ``SomeSetting=%s`` (with %s replaced with the value, of course), again much like how things are written with normal files. The scripts given in get/set **must have absolute paths** or jobservice_ may not be able to find them.
 Other than that, there are no real limitations: you can use extra arguments to scripts, get and set can be different programs, and you can even mix this with regular files as in the above examples. These are all rather advanced, however, and using regular files should cover most use cases.
 
 The "%n" shortcut
@@ -194,7 +194,7 @@ This is the main portion of this document. Different types have different requir
 bool
 ~~~~
 
-A ``bool`` type is a simple true/false setting. This is represented in jobs-admin as a checkbox.
+A ``bool`` type is a simple true/false setting. This is represented in jobs-admin_ as a checkbox.
 
 Values
 ''''''
@@ -226,7 +226,7 @@ This creates a setting of type ``bool`` named ``enabled`` with a description of 
 int/float
 ~~~~~~~~~
 
-An ``int`` corresponds to an unsigned integer, and ``float`` corresponds to a decimal. jobs-admin renders these as GtkSpinButton widgets.
+An ``int`` corresponds to an unsigned integer, and ``float`` corresponds to a decimal. jobs-admin_ renders these as GtkSpinButton widgets.
 
 Values
 ''''''
@@ -260,7 +260,7 @@ A setting named ``Port`` of type ``int`` is created. Its description is simply "
 str
 ~~~
 
-A ``str`` is a simple text string. jobs-admin renders this as a text box. If a client program isn't sure how to render another type, it may treat it as a ``str``.
+A ``str`` is a simple text string. jobs-admin_ renders this as a text box. If a client program isn't sure how to render another type, it may treat it as a ``str``.
 
 Value translation should almost *never* be used here.
 
@@ -297,7 +297,7 @@ This will insert "Careful: fire is dangerous." as a setting. Because settings ar
 choice
 ~~~~~~
 
-A ``choice`` setting requires one of its values be selected. Rendered in jobs-admin as a combo box.
+A ``choice`` setting requires one of its values be selected. Rendered in jobs-admin_ as a combo box.
 
 Values
 ''''''
@@ -338,7 +338,7 @@ Renders a ``choice`` setting named ``default_input_policy``. Stored in ``/etc/de
 file/dir
 ~~~~~~~~
 
-A ``file`` or ``dir`` setting points to a file or directory on the system. Normally, this is rendered as a GtkFileChooserButton in jobs-admin, however it may render as a textbox if the ``exist`` constraint is ``false``.
+A ``file`` or ``dir`` setting points to a file or directory on the system. Normally, this is rendered as a GtkFileChooserButton in jobs-admin_, however it may render as a textbox if the ``exist`` constraint is ``false``.
 
 Values
 ''''''
@@ -371,50 +371,97 @@ Creates a ``dir`` setting named ``log_location``, stored in ``/etc/someservice.c
 user/group
 ~~~~~~~~~~
 
-
+Much like a ``choice`` setting, but using system users or groups instead of configurable choices. 
 
 Values
 ''''''
 
-
+Value translation should not be used, but constraints are available:
 
 Constraints
 ```````````
 
 useid
-    blah
+    If ``true``, the client should send and recieve values as numerical user IDs.
+    If ``false``, user or group names should be used.
+    Defaults to ``false``.
 
 Example
 '''''''
 
 ::
 
-    <>
+    <setting type="group" name="SystemGroup">
+        <description>System Group</description>
+        <data>
+            <parse file="/etc/cups/cupsd.conf">%n %s</parse>
+        </data>
+        <values useid="false" />
+    </setting>
 
-desc
+A ``group`` setting named ``SystemGroup``. Stored in ``/etc/cups/cupsd.conf`` as ``SystemGroup %s``. Because ``useid`` is false, the entire <values> tag may be omitted.
 
 exec
 ~~~~
 
-non-abs paths
+Suggests to the client program that another application should be run to manage this particular service. The client program is responsible for launching this process, in fact, it may choose not to show settings of this type at all. jobs-admin_ presents these as a description followed by a "Launch" button to start the application.
+
+Uses a static value with the shell-interpreted command to launch::
+
+    <data val="someapplication" />
 
 Example
 '''''''
 
 ::
 
-    <>
+    <setting type="exec" name="gufw">
+        <description>Manage your firewall</description>
+        <data val="gufw" />
+    </setting>
 
-desc
+An ``exec`` setting named ``gufw`` that suggests that the user launch ``gufw`` to manage their firewall.
 
 Translation
 ===========
 
+Because <description> tags contain text that is displayed to the user, this text may be translated. Translations must be shipped inside the SLS file using xml:lang notation for alternate languages::
+
+    <setting name="stuff" type="label">
+        <description>Hello!</description>
+        <description xml:lang="es_ES">¡Hola!</description>
+        ...
+
+The **intltool** suite is capable of generating translatable XML files from gettext .po files. If you can't support the translation infrastructure needed here, we may be able to ship the SLS definition and translations with jobservice_ itself. Read on.
+
 Distribution
 ============
+
+Once you've gotten your SLS definition written, working, and hopefully translated, it's time to ship it out to your users.
 
 With your service
 -----------------
 
+If you are able to, I recommend simply shipping the SLS definition *with* your system service. It won't introduce any additional dependencies, as it is just a single XML file that is loaded only when needed.
+
+To do so, just have your installation script or package install your SLS file to ``/usr/share/jobservice/sls``. So, if you want to ship your ``apache2.xml`` SLS, it should go in ``/usr/share/jobservice/sls/apache2.xml``. If the ``sls`` directory doesn't already exist, it should be created.
+
+When jobservice_ starts up, it will read in your SLS file and display your settings. That's it!
+
 With jobservice
 ---------------
+
+If, for some reason, you don't want to ship your SLS file with your service, we may be able to ship it with jobservice_ directly. This may be useful if you are unable to properly support the translation infrastructure needed for internationalizing SLS description tags. Email your SLS definition to me (my email is at the top of this document) or branch lp:jobservice and add your SLS definition to it for merging.
+
+Your SLS file will then be shipped as a "default" set of settings. If you choose to ship these in your own service later, these will be automatically overriden. We'll add the description tags for translation.
+
+End
+===
+
+If you've survived this far, congratulations! You are now an SLS guru. If you need me to look over your SLS file, need assistance, or just want to chat, feel free to email me, ping me on twitter (@jpeddicord), identi.ca (@jacob), or on irc.freenode.net (nick jacob). Other contact methods are on `my website <http://jacob.peddicord.net>`_.
+
+Keep tabs on jobservice_ and jobs-admin_ for updates and new features, as well!
+
+.. _jobservice: https://launchpad.net/jobservice
+.. _jobs-admin: https://launchpad.net/jobsadmin
+
