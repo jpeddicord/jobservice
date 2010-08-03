@@ -50,7 +50,7 @@ loop = MainLoop()
 srv = RootJobService(
     BusName('com.ubuntu.JobService', bus=SystemBus()),
     JobService.DBUS_PATH,
-    idle=IdleTimeout(loop, 300),
+    idle=IdleTimeout(loop, 600),
     enforce=options.enforce
 )
 loop.run()
