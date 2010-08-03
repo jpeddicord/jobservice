@@ -1,5 +1,5 @@
-jobservice (0.8-0ubuntu1) maverick; urgency=low
+jobservice (0.8.0-0ubuntu1) maverick; urgency=low
 
   * Initial release. (LP: #612834)
 
- -- Jacob Peddicord <jpeddicord@ubuntu.com>  Tue, 03 Aug 2010 00:35:31 -0400
+ -- Jacob Peddicord <jpeddicord@ubuntu.com>  Tue, 03 Aug 2010 00:37:50 -0400
