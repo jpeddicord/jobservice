@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-03 00:40-0400\n"
+"POT-Creation-Date: 2010-08-03 16:06-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,10 +34,18 @@ msgid "Remember powered state"
 msgstr ""
 
 #: ../sls/cups.xml.in.h:1
-msgid "Manage CUPS"
+msgid "Configure printers"
 msgstr ""
 
 #: ../sls/cups.xml.in.h:2
+msgid "Launch web interface"
+msgstr ""
+
+#: ../sls/cups.xml.in.h:3
+msgid "Manage CUPS"
+msgstr ""
+
+#: ../sls/cups.xml.in.h:4
 msgid "System Group"
 msgstr ""
 
@@ -50,7 +58,15 @@ msgid "NTP Server"
 msgstr ""
 
 #: ../sls/pulseaudio.xml.in.h:1
+msgid "PulseAudio Preferences"
+msgstr ""
+
+#: ../sls/pulseaudio.xml.in.h:2
 msgid "System mode"
+msgstr ""
+
+#: ../sls/pulseaudio.xml.in.h:3
+msgid "Volume Control"
 msgstr ""
 
 #: ../sls/ssh.xml.in.h:1

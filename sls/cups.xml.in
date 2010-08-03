@@ -3,9 +3,19 @@
  "-//Ubuntu//DTD JobService Service-Level Settings 0.8//EN"
  "http://people.ubuntu.com/~jpeddicord/SLS/0.8/sls.dtd">
 <settings>
-    <setting type="exec" name="manage_web">
+    <setting type="exec" name="manage">
         <_description>Manage CUPS</_description>
         <data val="xdg-open 'http://localhost:631/'"/>
+        <values>
+            <value name="system-config-printer">
+                <_description>Configure printers</_description>
+                <raw>system-config-printer</raw>
+            </value>
+            <value name="browser">
+                <_description>Launch web interface</_description>
+                <raw>xdg-open 'http://localhost:631/'</raw>
+            </value>
+        </values>
     </setting>
     <setting type="group" name="SystemGroup">
         <_description>System Group</_description>

@@ -17,4 +17,12 @@
             </value>
         </values>
     </setting>
+    <setting type="exec" name="prefs">
+        <_description>PulseAudio Preferences</_description>
+        <data val="paprefs" />
+    </setting >
+    <setting type="exec" name="volume">
+        <_description>Volume Control</_description>
+        <data val="pavucontrol" />
+    </setting >
 </settings>

@@ -410,17 +410,34 @@ Uses a static value with the shell-interpreted command to launch::
 
     <data val="someapplication" />
 
+Alternatively, if values are provided, the client program should check for the existence of each, deferring to the next if one is not available.
+
+Values
+''''''
+
+If not using a static value in the data section, use values to list the commands that should be run. If one is not available, the next will be presented, until there are no more options left.
+
 Example
 '''''''
 
 ::
 
-    <setting type="exec" name="gufw">
-        <description>Manage your firewall</description>
-        <data val="gufw" />
+    <setting type="exec" name="manage">
+        <_description>Manage CUPS</_description>
+        <data val="xdg-open 'http://localhost:631/'"/>
+        <values>
+            <value name="system-config-printer">
+                <_description>Configure printers</_description>
+                <raw>system-config-printer</raw>
+            </value>
+            <value name="browser">
+                <_description>Launch web interface</_description>
+                <raw>xdg-open 'http://localhost:631/'</raw>
+            </value>
+        </values>
     </setting>
 
-An ``exec`` setting named ``gufw`` that suggests that the user launch ``gufw`` to manage their firewall.
+An ``exec`` setting named ``manage`` that suggests that the user launch ``system-config-printer`` to manage printers. If that is not available, the web interface will be suggested instead.
 
 Translation
 ===========
