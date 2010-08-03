@@ -428,16 +428,14 @@ Example
         <values>
             <value name="system-config-printer">
                 <_description>Configure printers</_description>
-                <raw>system-config-printer</raw>
             </value>
-            <value name="browser">
+            <value name="xdg-open 'http://localhost:631/'">
                 <_description>Launch web interface</_description>
-                <raw>xdg-open 'http://localhost:631/'</raw>
             </value>
         </values>
     </setting>
 
-An ``exec`` setting named ``manage`` that suggests that the user launch ``system-config-printer`` to manage printers. If that is not available, the web interface will be suggested instead.
+An ``exec`` setting named ``manage`` that suggests that the user launch ``system-config-printer`` to manage printers. If that is not available, the web interface will be suggested instead. Note that the action to launch is in the value name. The text of <raw> tags is not passed over D-Bus, so you need to specify the action in the name.
 
 Translation
 ===========

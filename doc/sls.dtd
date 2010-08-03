@@ -24,7 +24,7 @@
 <!ATTLIST values exist CDATA #IMPLIED>
 <!ATTLIST values useid CDATA #IMPLIED>
 
-<!ELEMENT value (raw,description?)>
+<!ELEMENT value (raw?,description?)>
 <!ATTLIST value name CDATA #REQUIRED>
 
 <!ELEMENT raw (#PCDATA)>
