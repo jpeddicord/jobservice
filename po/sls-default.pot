@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-03 16:06-0400\n"
+"POT-Creation-Date: 2010-08-03 16:24-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -114,13 +114,17 @@ msgid "Drop"
 msgstr ""
 
 #: ../sls/ufw.xml.in.h:6
-msgid "Manage your firewall"
+msgid "Firewall active"
 msgstr ""
 
 #: ../sls/ufw.xml.in.h:7
-msgid "Reject"
+msgid "Manage your firewall"
 msgstr ""
 
 #: ../sls/ufw.xml.in.h:8
+msgid "Reject"
+msgstr ""
+
+#: ../sls/ufw.xml.in.h:9
 msgid "Use IPV6"
 msgstr ""

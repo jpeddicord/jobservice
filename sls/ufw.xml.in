@@ -7,6 +7,21 @@
         <_description>Manage your firewall</_description>
         <data val="gufw" />
     </setting>
+    <setting type="bool" name="active">
+        <_description>Firewall active</_description>
+        <data>
+            <parse get="/usr/sbin/ufw status">Status: %s</parse>
+            <parse set="/usr/lib/jobservice/helpers/ufw-active">%s</parse>
+        </data>
+        <values>
+            <value name="true">
+                <raw>active</raw>
+            </value>
+            <value name="false">
+                <raw>inactive</raw>
+            </value>
+        </values>
+    </setting>
     <setting name="ipv6" type="bool">
         <_description>Use IPV6</_description>
         <data>

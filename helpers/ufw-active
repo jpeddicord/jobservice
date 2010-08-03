@@ -1,0 +1,10 @@
+#!/bin/bash
+
+read active
+
+if [[ $active == 'inactive' ]]; then
+    ufw disable
+else
+    ufw enable
+fi
+

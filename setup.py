@@ -38,10 +38,11 @@ setup_info = dict(
     cmdclass={'install_fix_paths': install_fix_paths},
     packages=['JobService', 'JobService.backends'],
     data_files=[
-        ('share/dbus-1/system-services/', ['com.ubuntu.JobService.service', 'com.ubuntu.JobService.Job.service']),
         ('/etc/dbus-1/system.d/', ['com.ubuntu.JobService.conf']),
+        ('share/dbus-1/system-services/', ['com.ubuntu.JobService.service', 'com.ubuntu.JobService.Job.service']),
         ('share/polkit-1/actions/', ['com.ubuntu.jobservice.policy']),
-        ('share/jobservice/default/', ['sls/{0}'.format(x) for x in listdir('sls')]),
+        ('share/jobservice/default/', ['sls/'+x for x in listdir('sls')]),
+        ('lib/jobservice/helpers/', ['helpers/'+x for x in listdir('helpers')]),
         ('sbin/', ['jobservice']),
     ],
 )
