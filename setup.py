@@ -7,7 +7,6 @@ from distutils.core import setup
 from distutils.command.install import install
 from distutils.core import Command
 
-
 class install_fix_paths(Command):
     def initialize_options(self): pass
     def finalize_options(self): pass
@@ -30,7 +29,7 @@ class install_fix_paths(Command):
 
 setup_info = dict(
     name='jobservice',
-    version='0.1~bzr',
+    version='0.8.0',
     description='jobservice',
     author='Jacob Peddicord',
     author_email='jpeddicord@ubuntu.com',
@@ -61,6 +60,14 @@ with open('JobService/info.py', 'w') as f:
 # update translations if available (needed for branch builds)
 if exists('./translations.sh'):
     Popen(['./translations.sh']).communicate()
+
+# generate documentation
+try:
+    from docutils.core import publish_file
+    from docutils.writers import manpage, html4css1
+    publish_file(source_path='doc/manpage.txt', destination_path='jobservice.1', writer=manpage.Writer())
+    publish_file(source_path='doc/sls-format-0.8.txt', destination_path='doc/sls-format-0.8.html', writer=html4css1.Writer(), settings_overrides={'stylesheet_path': 'doc/style.css'})
+except: pass
 
 install.sub_commands.append(('install_fix_paths', None))
 setup(**setup_info)

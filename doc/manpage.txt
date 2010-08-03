@@ -1,0 +1,39 @@
+============
+ jobservice
+============
+
+----------------------------
+system job management daemon
+----------------------------
+
+:Author:            Jacob Peddicord <jpeddicord@ubuntu.com>
+:Date:              2010-09-03
+:Manual section:    1
+:Copyright:         This manual page is available under the terms of the GPL version 3.
+
+SYNOPSIS
+========
+
+**jobservice** [options]
+
+OPTIONS
+=======
+
+**jobservice** accepts the following development options:
+
+--debug
+    Run in debug mode, displaying more output to the console. Enables loading of SLS files from relative directory ``./sls``.
+
+--no-enforce
+    Disable PolicyKit prompts. This should *never* be used in production.
+
+DESCRIPTION
+===========
+
+jobservice is normally started on-demand by D-Bus. Launching manually should only be used for debugging or development purposes.
+
+BUGS
+====
+
+Bugs can be reported at https://bugs.launchpad.net/jobservice.
+
