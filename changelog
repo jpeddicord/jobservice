@@ -1,5 +1,5 @@
-jobservice (0.1~bzr74-0~ppa1) lucid; urgency=low
+jobservice (0.8-0ubuntu1) maverick; urgency=low
 
-  * Preview release.
+  * Initial release. (LP: #612834)
 
- -- Jacob Peddicord <jpeddicord@ubuntu.com>  Tue, 27 Jul 2010 13:54:10 -0400
+ -- Jacob Peddicord <jpeddicord@ubuntu.com>  Tue, 03 Aug 2010 00:35:31 -0400

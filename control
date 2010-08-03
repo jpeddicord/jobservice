@@ -1,18 +1,19 @@
 Source: jobservice
 Section: admin
 Priority: optional
-Maintainer: Jacob Peddicord <jpeddicord@ubuntu.com>
-Build-Depends: debhelper (>= 7), cdbs (>= 0.4.49), python (>= 2.6), python-support (>= 0.5.3)
-Standards-Version: 3.8.4
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Jacob Peddicord <jpeddicord@ubuntu.com>
+Build-Depends: debhelper (>= 7), python (>= 2.6), python-support (>= 0.5.3), python-docutils, docutils-writer-manpage
+Standards-Version: 3.9.1
 Homepage: https://launchpad.net/jobservice
 
 Package: jobservice
 Architecture: all
-Depends: ${python:Depends}, ${misc:Depends}, python-gtk2
+Depends: ${python:Depends}, ${misc:Depends}
 Suggests: jobs-admin
 Description: system job management daemon
  jobservice is a system daemon that is accessible over DBus, providing
- methods for controlling jobs (services) on a system using Upstart 0.6, 0.10,
+ methods for controlling jobs (services) on a system using Upstart 0.6
  or a plain System V boot.
  .
  It is likely used in conjunction with jobs-admin, the GTK+ interface used
