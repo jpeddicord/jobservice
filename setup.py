@@ -15,11 +15,12 @@ class install_fix_paths(Command):
         data_dir = self.get_finalized_command('install_data').install_dir
         lib_dir = self.get_finalized_command('install_lib').install_dir
         # dbus service
-        fn = data_dir + '/share/dbus-1/system-services/com.ubuntu.JobService.service'
-        with open(fn) as f:
-            data = f.read()
-        with open(fn, 'w') as f:
-            f.write(data.replace('Exec=/usr', 'Exec=' + prefix))
+        for iface in ('com.ubuntu.JobService', 'com.ubuntu.JobService.Job'):
+            fn = data_dir + '/share/dbus-1/system-services/' + iface + '.service'
+            with open(fn) as f:
+                data = f.read()
+            with open(fn, 'w') as f:
+                f.write(data.replace('Exec=/usr', 'Exec=' + prefix))
         # info.py
         fn = lib_dir + '/JobService/info.py'
         with open(fn) as f:
@@ -29,7 +30,7 @@ class install_fix_paths(Command):
 
 setup_info = dict(
     name='jobservice',
-    version='0.8.0',
+    version='0.8.0~bzr',
     description='jobservice',
     author='Jacob Peddicord',
     author_email='jpeddicord@ubuntu.com',
@@ -37,7 +38,7 @@ setup_info = dict(
     cmdclass={'install_fix_paths': install_fix_paths},
     packages=['JobService', 'JobService.backends'],
     data_files=[
-        ('share/dbus-1/system-services/', ['com.ubuntu.JobService.service']),
+        ('share/dbus-1/system-services/', ['com.ubuntu.JobService.service', 'com.ubuntu.JobService.Job.service']),
         ('/etc/dbus-1/system.d/', ['com.ubuntu.JobService.conf']),
         ('share/polkit-1/actions/', ['com.ubuntu.jobservice.policy']),
         ('share/jobservice/default/', ['sls/{0}'.format(x) for x in listdir('sls')]),

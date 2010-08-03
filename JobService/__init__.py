@@ -23,7 +23,7 @@ except:
 
 DBUS_IFACE = 'com.ubuntu.JobService'
 DBUS_PATH = '/com/ubuntu/JobService'
-DBUS_JOB_IFACE = '{0}.Job'.format(DBUS_IFACE)
+DBUS_JOB_IFACE = DBUS_IFACE + '.Job'
 
 SLS_SYSTEM = prefix + '/share/jobservice/sls/{0}.xml'
 SLS_DEFAULT = prefix + '/share/jobservice/default/{0}.xml'
