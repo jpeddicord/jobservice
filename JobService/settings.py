@@ -29,11 +29,15 @@ class ServiceSettings:
     
     def __init__(self, jobname):
         self.jobname = jobname
+        if '/' in jobname:
+            basename = jobname.split('/')[0]
+        else:
+            basename = jobname
         self.filename = ''
         for loc in (JobService.SLS_LOCAL, JobService.SLS_SYSTEM, JobService.SLS_DEFAULT):
             if not loc:
                 continue
-            self.filename = loc.format(jobname)
+            self.filename = loc.format(basename)
             if exists(self.filename):
                 log.debug('Using ' + self.filename)
                 break
@@ -67,6 +71,7 @@ class ServiceSettings:
                 # find the first source we can obtain a value from
                 for p in ele.findall('data/parse'):
                     parse = p.text.replace('%n', name)
+                    parse = parse.replace('%j', self.jobname)
                     # load from file
                     if p.get('file'):
                         prescan = p.get('after')
@@ -75,7 +80,8 @@ class ServiceSettings:
                         break
                     # load from external helper
                     elif p.get('get'):
-                        proc = Popen(p.get('get'), shell=True, stdout=PIPE)
+                        cmd = p.get('get').replace('%j', self.jobname)
+                        proc = Popen(cmd, shell=True, stdout=PIPE)
                         sio = StringIO(proc.communicate()[0])
                         raw = self._raw_value(parse, sio)
                         break
@@ -106,6 +112,7 @@ class ServiceSettings:
         # write out values
         for p in data.findall('parse'):
             parse = p.text.replace('%n', name)
+            parse = parse.replace('%j', self.jobname)
             # write to file
             if p.get('file'):
                 filename = p.get('file')
@@ -121,7 +128,8 @@ class ServiceSettings:
                 rename(write.name, read.name)
             # send to an external program for processing
             elif p.get('set'):
-                proc = Popen(p.get('set'), shell=True, stdin=PIPE)
+                cmd = p.get('set').replace('%j', self.jobname)
+                proc = Popen(cmd, shell=True, stdin=PIPE)
                 proc.communicate(parse.replace('%s', newval))
     
     def _raw_value(self, parse, read, write=None, newval=None, prescan=None):

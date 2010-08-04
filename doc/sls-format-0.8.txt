@@ -109,7 +109,10 @@ There are *very rare* cases where simply writing to a file is not enough. For th
 
 This calls ``my-helper`` and parses STDOUT for ``SomeSetting %s`` as is done for normal files.
 When saving, ``my-helper`` is called with STDIN set to ``SomeSetting=%s`` (with %s replaced with the value, of course), again much like how things are written with normal files. The scripts given in get/set **must have absolute paths** or jobservice_ may not be able to find them.
+
 Other than that, there are no real limitations: you can use extra arguments to scripts, get and set can be different programs, and you can even mix this with regular files as in the above examples. These are all rather advanced, however, and using regular files should cover most use cases.
+
+Additionally, any instance of ``%j`` in the get/set attributes or parse body will be replaced with the full job name. This can be useful when multiple instances of a job use the same SLS file and you need to differentiate between them.
 
 The "%n" shortcut
 ~~~~~~~~~~~~~~~~~
