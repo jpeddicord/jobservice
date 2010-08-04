@@ -7,7 +7,7 @@ system job management daemon
 ----------------------------
 
 :Author:            Jacob Peddicord <jpeddicord@ubuntu.com>
-:Date:              2010-09-03
+:Date:              2010-08-03
 :Manual section:    1
 :Copyright:         This manual page is available under the terms of the GPL version 3.
 
