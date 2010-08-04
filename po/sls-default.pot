@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-03 21:22-0400\n"
+"POT-Creation-Date: 2010-08-03 22:46-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,6 +51,14 @@ msgstr ""
 
 #: ../sls/kerneloops.xml.in.h:1
 msgid "Enable kernel crash reporting"
+msgstr ""
+
+#: ../sls/networking.xml.in.h:1
+msgid "Hostname"
+msgstr ""
+
+#: ../sls/networking.xml.in.h:2
+msgid "Hostname changes will not take effect until the next restart."
 msgstr ""
 
 #: ../sls/network-interface.xml.in.h:1

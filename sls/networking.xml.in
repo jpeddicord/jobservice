@@ -3,7 +3,13 @@
  "-//Ubuntu//DTD JobService Service-Level Settings 0.8//EN"
  "http://people.ubuntu.com/~jpeddicord/SLS/0.8/sls.dtd">
 <settings>
-    <setting type="label" name="placeholder">
-        <description>Placeholder for global network settings</description>
+    <setting type="label" name="reboot_info">
+        <_description>Hostname changes will not take effect until the next restart.</_description>
+    </setting>
+    <setting name="hostname" type="str">
+        <_description>Hostname</_description>
+        <data>
+            <parse file="/etc/hostname">%s</parse>
+        </data>
     </setting>
 </settings>
