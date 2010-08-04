@@ -3,9 +3,6 @@
  "-//Ubuntu//DTD JobService Service-Level Settings 0.8//EN"
  "http://people.ubuntu.com/~jpeddicord/SLS/0.8/sls.dtd">
 <settings>
-    <setting type="label" name="placeholder">
-        <description>Instance setting placeholder</description>
-    </setting>
     <setting type="bool" name="manual">
         <_description>Manage manually</_description>
         <data>
@@ -30,15 +27,11 @@
         <values>
             <value name="inet_dhcp">
                 <_description>DHCP</_description>
-                <raw>inet dhcp</raw>
+                <raw>dhcp</raw>
             </value>
             <value name="inet_static">
                 <_description>Static</_description>
-                <raw>inet static</raw>
-            </value>
-            <value name="inet6_static">
-                <_description>Static (IPv6)</_description>
-                <raw>inet6 static</raw>
+                <raw>static</raw>
             </value>
         </values>
     </setting>
