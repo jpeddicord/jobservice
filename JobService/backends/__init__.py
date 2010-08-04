@@ -138,15 +138,12 @@ class ServiceProxy(ServiceBase):
         return settings
     
     def set_service_settings(self, name, newsettings):
-        extra = {}
-        for sname, svalue in newsettings.iteritems():
-            try:
-                self.sls[name].set_setting(sname, svalue)
-            # if it's not in the XML, it's probably from the backend
-            except KeyError:
-                extra[sname] = svalue
+        for s in self.sls[name].get_all_settings():
+            if s in newsettings:
+                self.sls[name].set_setting(s, newsettings[s])
+                del newsettings[s]
         # send the leftover settings to the backend
-        self.bkmap[name].set_service_settings(name, extra)
+        self.bkmap[name].set_service_settings(name, newsettings)
 
 
 def _auto_backends():
