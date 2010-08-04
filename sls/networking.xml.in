@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC
+ "-//Ubuntu//DTD JobService Service-Level Settings 0.8//EN"
+ "http://people.ubuntu.com/~jpeddicord/SLS/0.8/sls.dtd">
+<settings>
+    <setting type="label" name="placeholder">
+        <description>Placeholder for global network settings</description>
+    </setting>
+</settings>

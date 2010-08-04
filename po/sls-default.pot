@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-03 17:00-0400\n"
+"POT-Creation-Date: 2010-08-03 20:05-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,6 +51,38 @@ msgstr ""
 
 #: ../sls/kerneloops.xml.in.h:1
 msgid "Enable kernel crash reporting"
+msgstr ""
+
+#: ../sls/network-interface.xml.in.h:1
+msgid "DHCP"
+msgstr ""
+
+#: ../sls/network-interface.xml.in.h:2
+msgid "Default gateway"
+msgstr ""
+
+#: ../sls/network-interface.xml.in.h:3
+msgid "IP address"
+msgstr ""
+
+#: ../sls/network-interface.xml.in.h:4
+msgid "Manage manually"
+msgstr ""
+
+#: ../sls/network-interface.xml.in.h:5
+msgid "Network mode"
+msgstr ""
+
+#: ../sls/network-interface.xml.in.h:6
+msgid "Static"
+msgstr ""
+
+#: ../sls/network-interface.xml.in.h:7
+msgid "Static (IPv6)"
+msgstr ""
+
+#: ../sls/network-interface.xml.in.h:8
+msgid "Subnet mask"
 msgstr ""
 
 #: ../sls/ntp.xml.in.h:1
