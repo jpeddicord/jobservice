@@ -1,4 +1,6 @@
 jobservice
 ==========
 
+https://launchpad.net/jobservice
 
+jobservice is a simple dbus backend that can be used to easily control system jobs/services.

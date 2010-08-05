@@ -30,7 +30,7 @@ class install_fix_paths(Command):
 
 setup_info = dict(
     name='jobservice',
-    version='0.8.0~bzr',
+    version='0.8.0',
     description='jobservice',
     author='Jacob Peddicord',
     author_email='jpeddicord@ubuntu.com',
