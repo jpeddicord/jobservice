@@ -1,6 +1,9 @@
 #!/usr/bin/make -f
-# ex:noet
+# ex: noet
 
 %:
 	dh $@
+
+override_dh_clean:
+	dh_clean jobservice.1
 
