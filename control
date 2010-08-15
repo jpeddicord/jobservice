@@ -9,7 +9,7 @@ Homepage: https://launchpad.net/jobservice
 
 Package: jobservice
 Architecture: all
-Depends: ${python:Depends}, ${misc:Depends}, dbus
+Depends: ${python:Depends}, ${misc:Depends}, python-dbus
 Suggests: jobs-admin
 Description: system job management daemon
  jobservice is a system daemon that is accessible over DBus, providing
