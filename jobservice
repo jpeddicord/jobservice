@@ -42,15 +42,19 @@ log.debug('Starting up')
 if options.debug:
     log.debug('Using local SLS definitions')
     JobService.SLS_LOCAL = 'sls/{0}.xml'
+    idle = IdleTimeout(None)
+else:
+    idle = IdleTimeout(loop, 600)
 
 # start up!
 DBusGMainLoop(set_as_default=True)
 threads_init()
 loop = MainLoop()
+
 srv = RootJobService(
     BusName('com.ubuntu.JobService', bus=SystemBus()),
     JobService.DBUS_PATH,
-    idle=IdleTimeout(loop, 600),
+    idle=idle,
     enforce=options.enforce
 )
 loop.run()

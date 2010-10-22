@@ -26,11 +26,12 @@ class IdleTimeout:
     If idle for too long, quit.
     """
     
-    def __init__(self, loop, idlemax):
+    def __init__(self, loop, idlemax=600):
         self.loop = loop
         self.idlemax = idlemax
         self.lastused = time()
-        self.timeout = timeout_add_seconds(idlemax, self.callback)
+        if loop:
+            self.timeout = timeout_add_seconds(idlemax, self.callback)
         
     def callback(self):
         now = time()
