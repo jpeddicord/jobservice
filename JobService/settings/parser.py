@@ -14,44 +14,28 @@
 # You should have received a copy of the GNU General Public License
 # along with jobservice.  If not, see <http://www.gnu.org/licenses/>.
 
-import logging
 from os import rename
-from os.path import exists
 from cStringIO import StringIO
 from subprocess import Popen, PIPE
 from xml.etree.cElementTree import ElementTree
-import JobService
 
-log = logging.getLogger('sls')
 
-class ServiceSettings:
-    """Service-level settings (SLS) for a single service."""
+class SettingParser:
+    """XML and file parser for SLS."""
     
-    def __init__(self, jobname):
+    def __init__(self, filename, jobname):
+        self.filename = filename
         self.jobname = jobname
-        if '/' in jobname:
-            basename = jobname.split('/')[0]
-        else:
-            basename = jobname
-        self.filename = ''
-        for loc in (JobService.SLS_LOCAL, JobService.SLS_SYSTEM, JobService.SLS_DEFAULT):
-            if not loc:
-                continue
-            self.filename = loc.format(basename)
-            if exists(self.filename):
-                log.debug('Using ' + self.filename)
-                break
         self.tree = ElementTree()
         self.tree.parse(self.filename)
-        self.selements = {}
-        self.settings = {}
+        self._selements = {}
     
     def get_all_settings(self):
-        """Return a list of setting names available on this service."""
+        """Return a list of setting names available in this file."""
         lst = []
         for e in self.tree.findall('setting'):
             name = e.get('name')
-            self.selements[name] = e
+            self._selements[name] = e
             lst.append(name)
         return lst
     
@@ -59,7 +43,7 @@ class ServiceSettings:
         """Return details of a specific setting by name in the format:
         (name, type, description, current, possible[], constraints{})
         """
-        ele = self.selements[name]
+        ele = self._selements[name]
         # current value
         raw = ''
         data = ele.find('data')
@@ -87,18 +71,19 @@ class ServiceSettings:
                         break
         # get available values
         values = []
-        self.settings[name] = raw
+        current = raw
         for v in ele.findall('values/value'):
             values.append((v.get('name'), v.findtext('description', '')))
+            # value translation
             if v.findtext('raw') == raw:
-                self.settings[name] = v.get('name')
+                current = v.get('name')
         vals = ele.find('values')
         constraints = vals.attrib if vals != None else {}
         return (name, ele.get('type'), ele.findtext('description'),
-                self.settings[name], values, constraints)
+                current, values, constraints)
     
     def set_setting(self, name, value):
-        ele = self.selements[name]
+        ele = self._selements[name]
         # don't do anything with an empty data element
         data = ele.find('data')
         if not len(data):
