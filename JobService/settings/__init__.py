@@ -17,7 +17,22 @@
 import logging
 from os.path import exists
 from JobService.settings.parser import SettingParser
+from JobService.settings import types
 import JobService
+
+TYPE_MAP = {
+    'bool': types.Bool,
+    'int': types.Int,
+    'float': types.Float,
+    'str': types.Str,
+    'label': types.Label,
+    'choice': types.Choice,
+    'file': types.File,
+    'dir': types.Dir,
+    'user': types.User,
+    'group': types.Group,
+    'exec': types.Exec,
+}
 
 log = logging.getLogger('sls')
 
@@ -38,14 +53,23 @@ class ServiceSettings:
             if exists(self.filename):
                 log.debug('Using ' + self.filename)
                 break
+        self.settingnames = []
         self.settings = {}
         self.parser = SettingParser(self.filename, jobname)
     
     def get_all_settings(self):
-        return self.parser.get_all_settings()
+        if not self.settingnames:
+            self.settingnames = self.parser.get_all_settings()
+        return self.settingnames
     
     def get_setting(self, name, lang=''):
-        return self.parser.get_setting(name, lang)
+        setting = self.parser.get_setting(name, lang)
+        inst = TYPE_MAP[setting[1]](setting[3], setting[4], setting[5])
+        self.settings[name] = inst
+        return setting
     
     def set_setting(self, name, value):
         self.parser.set_setting(name, value)
+    
+    def validate_setting(self, name):
+        self.settings[name].validate()
