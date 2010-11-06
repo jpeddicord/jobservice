@@ -41,7 +41,6 @@ setup_info = dict(
         ('/etc/dbus-1/system.d/', ['com.ubuntu.JobService.conf']),
         ('share/dbus-1/system-services/', ['com.ubuntu.JobService.service', 'com.ubuntu.JobService.Job.service']),
         ('share/polkit-1/actions/', ['com.ubuntu.jobservice.policy']),
-        ('share/jobservice/default/', ['sls/'+x for x in listdir('sls')]),
         ('lib/jobservice/helpers/', ['helpers/'+x for x in listdir('helpers')]),
         ('sbin/', ['jobservice']),
     ],
