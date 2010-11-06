@@ -36,6 +36,8 @@ TYPE_MAP = {
 
 log = logging.getLogger('sls')
 
+#XXX: this may be useful as a dictionary subclass, if done right.
+
 class ServiceSettings:
     """Service-level settings (SLS) for a single service."""
     
@@ -64,12 +66,13 @@ class ServiceSettings:
     
     def get_setting(self, name, lang=''):
         setting = self.parser.get_setting(name, lang)
-        inst = TYPE_MAP[setting[1]](setting[3], setting[4], setting[5])
+        inst = TYPE_MAP[setting[1]](setting[4], setting[5])
         self.settings[name] = inst
         return setting
     
     def set_setting(self, name, value):
         self.parser.set_setting(name, value)
     
-    def validate_setting(self, name):
-        self.settings[name].validate()
+    def validate_setting(self, name, value):
+        self.settings[name].validate(value)
+        return True

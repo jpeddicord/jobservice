@@ -15,37 +15,38 @@
 # along with jobservice.  If not, see <http://www.gnu.org/licenses/>.
 
 from os.path import exists
+from dbus import DBusException
 
 
-class ValidationError(Exception):
-    pass
+class ValidationError(DBusException):
+    _dbus_error_name = 'com.ubuntu.JobService.ValidationError'
 
 class Type:
     """Root type."""
-    def __init__(self, data, values, constraints):
-        self.data = data
+    def __init__(self, values, constraints):
         self.values = values
         self.constraints = constraints
     
     def validate(self):
         return
     
-    def clean(self):
-        return self.data
+    def clean(self, data):
+        return data
 
 class Bool(Type):
     """A boolean accepting "true" and "false" literal values."""
-    def validate(self):
-        if self.data not in ('true', 'false'):
+    def validate(self, data):
+        if data not in ('true', 'false'):
             raise ValidationError("Invalid boolean value.")
 
 class Int(Type):
     """An integer with optional constraints."""
     convert = int
-    def validate(self):
-        if 'min' in self.constraints and convert(self.data) < convert(self.constraints['min']):
+    def validate(self, data):
+        print convert
+        if 'min' in self.constraints and convert(data) < convert(self.constraints['min']):
             raise ValidationError("Out of bounds.")
-        if 'max' in self.constraints and convert(self.data) > convert(self.constraints['max']):
+        if 'max' in self.constraints and convert(data) > convert(self.constraints['max']):
             raise ValidationError("Out of bounds.")
 
 class Float(Int):
@@ -62,17 +63,16 @@ class Label(Type):
 
 class Choice(Type):
     """A choice out of a finite set of options."""
-    def validate(self):
-        if self.data not in self.values.keys():
+    def validate(self, data):
+        if data not in self.values.keys():
             raise ValidationError("Not a valid choice.")
 
 class File(Type):
     """A single file path."""
-    def validate(self):
+    def validate(self, data):
         if 'exists' in self.constraints and self.constraints['exists'] == 'true':
-            if not os.path.exists(self.data):
+            if not os.path.exists(data):
                 raise ValidationError("File does not exist.")
-        return True
 
 class Dir(File):
     """A path to a directory."""

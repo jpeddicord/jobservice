@@ -23,6 +23,7 @@ from JobService.settings import ServiceSettings
 log = logging.getLogger('backends')
 
 BACKENDS = []   # automatic if empty
+                # distributors can manually set this for efficiency
 
 class ServiceBase:
     
@@ -56,6 +57,9 @@ class ServiceBase:
         return []
     
     def set_service_settings(self, name, newsettings):
+        pass
+
+    def validate_service_setting(self, name, setting, value):
         pass
 
 class ServiceProxy(ServiceBase):
@@ -138,13 +142,22 @@ class ServiceProxy(ServiceBase):
         return settings
     
     def set_service_settings(self, name, newsettings):
+        # validate *all* settings before applying *any*
+        for s in newsettings:
+            self.validate_service_setting(name, s, newsettings[s])
+        # if no exception occurred, we're good
         for s in self.sls[name].get_all_settings():
             if s in newsettings:
-                self.sls[name].set_setting(s, newsettings[s])
-                del newsettings[s]
+                self.sls[name].set_setting(s, newsettings.pop(s))
         # send the leftover settings to the backend
         self.bkmap[name].set_service_settings(name, newsettings)
 
+    def validate_service_setting(self, name, setting, value):
+        if setting in self.sls[name].get_all_settings():
+            return self.sls[name].validate_setting(setting, value)
+        # let backend verify the rest of the settings
+        return self.bkmap[name].validate_service_setting(name, newsettings)
+    
 
 def _auto_backends():
     """Return a list of available backends on this system."""
@@ -152,7 +165,7 @@ def _auto_backends():
     # start with sysv
     load = ['sysv']
         
-    # check for upstart
+    # check for upstart 0.6|0.10
     p = Popen(['/sbin/init', '--version'], stdout=PIPE)
     out = p.stdout.read()
     match = search('upstart (\d+\.\d+)', out)

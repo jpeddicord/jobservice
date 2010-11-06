@@ -110,19 +110,19 @@ class SingleJobService(DBusObject):
     @DBusMethod(DBUS_JOB_IFACE, in_signature='a{ss}', out_signature='',
                 sender_keyword='sender', connection_keyword='conn')
     def SetSettings(self, settings, sender=None, conn=None):
-        """Change a job's settings after verifying."""
+        """Change a job's settings after validating."""
         self.root.idle.ping()
         log.debug('SetSettings called on {0}'.format(self.name))
         self.root.policy.check(sender, conn)
         self.root.proxy.set_service_settings(self.name, settings)
         self._props = {}
     
-    @DBusMethod(DBUS_JOB_IFACE, in_signature='a{ss}', out_signature='b',
+    @DBusMethod(DBUS_JOB_IFACE, in_signature='ss', out_signature='b',
                 sender_keyword='sender', connection_keyword='conn')
-    def VerifySettings(self, settings, sender=None, conn=None):
-        """Verify that all provided changes are valid without changing them."""
+    def ValidateSetting(self, setting, value, sender=None, conn=None):
+        """Verify a setting's value is valid."""
         self.root.idle.ping()
-        log.debug('VerifySettings called on {0}'.format(self.name))
+        log.debug('ValidateSetting ({1}) called on {0}'.format(self.name, setting))
     
     def _load_properties(self):
         if not self._props:
