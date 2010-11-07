@@ -33,14 +33,14 @@ class Policy:
                 'org.freedesktop.PolicyKit1.Authority')
         
         if not enforce:
-            log.warn("Not enforcing PolicyKit privileges!")
+            log.warn('Not enforcing PolicyKit privileges!')
     
     def check(self, sender, conn, priv='com.ubuntu.jobservice.manage'):
         """
         Check or ask for authentication for job management.
         """
         if not self.enforce: return
-        log.debug("Asking for PolicyKit authorization")
+        log.debug('Asking for PolicyKit authorization')
         # get the PID of the sender
         if not self.dbus_iface:
             self.dbus_iface = Interface(conn.get_object('org.freedesktop.DBus',
@@ -51,8 +51,8 @@ class Policy:
                 ('unix-process', {'pid': pid, 'start-time': 0}),
                 priv, {'': ''}, 1, '', timeout=500)
         if not auth:
-            log.info("Authorization failed")
+            log.info('Authorization failed')
             raise DeniedByPolicy('Not authorized to manage jobs.')
-        log.debug("Authorization passed")
+        log.debug('Authorization passed')
         
             

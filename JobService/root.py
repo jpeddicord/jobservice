@@ -59,7 +59,7 @@ class RootJobService(DBusObject):
         )
         """
         self.idle.ping()
-        log.debug("GetAllJobs called")
+        log.debug('GetAllJobs called')
         svclist = []
         for job in self.jobs:
             svclist.append((job.name, job.path))

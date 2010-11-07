@@ -36,7 +36,7 @@ setup_info = dict(
     author_email='jpeddicord@ubuntu.com',
     url='https://launchpad.net/jobservice',
     cmdclass={'install_fix_paths': install_fix_paths},
-    packages=['JobService', 'JobService.backends'],
+    packages=['JobService', 'JobService.backends', 'JobService.settings'],
     data_files=[
         ('/etc/dbus-1/system.d/', ['com.ubuntu.JobService.conf']),
         ('share/dbus-1/system-services/', ['com.ubuntu.JobService.service', 'com.ubuntu.JobService.Job.service']),
