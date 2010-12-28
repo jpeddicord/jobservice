@@ -133,7 +133,7 @@ class ServiceBackend(ServiceBase):
     def _split_job(self, name):
         """Return (job_name, inst_name) from name."""
         if '/' in name:
-            job_name, inst_name = name.split('/')
+            job_name, inst_name = name.split('/', 1)
         else:
             job_name = name
             inst_name = None

@@ -146,17 +146,20 @@ class ServiceProxy(ServiceBase):
         for s in newsettings:
             self.validate_service_setting(name, s, newsettings[s])
         # if no exception occurred, we're good
-        for s in self.sls[name].get_all_settings():
-            if s in newsettings:
-                self.sls[name].set_setting(s, newsettings.pop(s))
+        if name in self.sls:
+            for s in self.sls[name].get_all_settings():
+                if s in newsettings:
+                    self.sls[name].set_setting(s, newsettings.pop(s))
         # send the leftover settings to the backend
         self.bkmap[name].set_service_settings(name, newsettings)
 
     def validate_service_setting(self, name, setting, value):
-        if setting in self.sls[name].get_all_settings():
+        # verify by provided SLS if available
+        if name in self.sls and setting in self.sls[name].get_all_settings():
             return self.sls[name].validate_setting(setting, value)
-        # let backend verify the rest of the settings
-        return self.bkmap[name].validate_service_setting(name, newsettings)
+        # otherwise let the backend verify
+        else:
+            return self.bkmap[name].validate_service_setting(name, setting, value)
     
 
 def _auto_backends():

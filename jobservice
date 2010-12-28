@@ -38,6 +38,11 @@ logging.basicConfig(level=level, datefmt="%H:%M:%S",
 log = logging.getLogger('jobservice')
 log.debug('Starting up')
 
+# start up!
+DBusGMainLoop(set_as_default=True)
+threads_init()
+loop = MainLoop()
+
 # local sls
 if options.debug:
     log.debug('Using local SLS definitions')
@@ -45,11 +50,6 @@ if options.debug:
     idle = IdleTimeout(None)
 else:
     idle = IdleTimeout(loop, 600)
-
-# start up!
-DBusGMainLoop(set_as_default=True)
-threads_init()
-loop = MainLoop()
 
 srv = RootJobService(
     BusName('com.ubuntu.JobService', bus=SystemBus()),
