@@ -94,6 +94,8 @@ class ServiceBackend(ServiceBase):
             raise SysVException('Stop failed: code {0}'.format(e.returncode))
     
     def set_service_automatic(self, name, auto):
+        if self.current not in self.runlevels[name]:
+            raise SysVException('Unsupported runlevel.')
         self._remove_rc(name, self.current)
         self._link_rc(name, self.current, auto)
         self.runlevels[name][self.current] = (auto,
@@ -104,11 +106,9 @@ class ServiceBackend(ServiceBase):
         if not name in self.runlevels:
             return settings
         for rlvl in sorted(self.runlevels[name].keys()):
-            if rlvl == '0' or rlvl == '6' or rlvl == 'S':
-                # skip 0 (shutdown), 6 (restart), or S (boot once)
+            if rlvl == '0' or rlvl == '1' or rlvl == '6' or rlvl == 'S':
+                # skip 0 (shutdown), 1 (single), 6 (restart), S (boot once)
                 continue
-            if rlvl == '1':
-                label = "Active in recovery mode" #XXX: i18n
             elif rlvl == self.current:
                 label = "Active in current runlevel ({runlevel})".format(runlevel=rlvl) #XXX: i18n
             else:
