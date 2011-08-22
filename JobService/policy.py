@@ -15,7 +15,7 @@
 # along with jobservice.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from dbus import SystemBus, DBusException, Interface
+from dbus import SystemBus, DBusException, Interface, UInt64
 
 log = logging.getLogger('policy')
 
@@ -48,7 +48,7 @@ class Policy:
         pid = self.dbus_iface.GetConnectionUnixProcessID(sender)
         # ask PolicyKit
         auth, challenge, details = self.pk.CheckAuthorization(
-                ('unix-process', {'pid': pid, 'start-time': 0}),
+                ('unix-process', {'pid': pid, 'start-time': UInt64(0)}),
                 priv, {'': ''}, 1, '', timeout=500)
         if not auth:
             log.info('Authorization failed')
