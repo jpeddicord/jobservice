@@ -101,37 +101,6 @@ class ServiceBackend(ServiceBase):
         self.runlevels[name][self.current] = (auto,
                 self.runlevels[name][self.current][1])
     
-    def get_service_settings(self, name, lang):
-        settings = []
-        if not name in self.runlevels:
-            return settings
-        for rlvl in sorted(self.runlevels[name].keys()):
-            if rlvl == '0' or rlvl == '1' or rlvl == '6' or rlvl == 'S':
-                # skip 0 (shutdown), 1 (single), 6 (restart), S (boot once)
-                continue
-            elif rlvl == self.current:
-                label = "Active in current runlevel ({runlevel})".format(runlevel=rlvl) #XXX: i18n
-            else:
-                label = "Active on runlevel {runlevel}".format(runlevel=rlvl) #XXX: i18n
-            settings.append(('runlevel_{0}'.format(rlvl), 'bool', label,
-                'true' if self.runlevels[name][rlvl][0] else 'false',
-                (('true', ''), ('false', '')), {}
-            ))
-        if settings:
-            settings.insert(0, ('lbl_runlevels', 'label',
-                    "<b>Runlevels</b>", '', (), {})) #XXX: i18n
-        return settings
-    
-    def set_service_settings(self, name, newsettings):
-        for sname, sval in newsettings.iteritems():
-            if sname.find('runlevel_') == 0:
-                rlvl = sname[-1:]
-                auto = (sval == 'true')
-                self._remove_rc(name, rlvl)
-                self._link_rc(name, rlvl, auto)
-                self.runlevels[name][rlvl] = (auto,
-                        self.runlevels[name][rlvl][1])
-    
     def _get_runlevel_info(self):
         """Parse /etc/rc?.d and store symlink information.
         
