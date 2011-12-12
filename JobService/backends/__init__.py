@@ -157,8 +157,8 @@ def _auto_backends():
     out = p.stdout.read()
     match = search('upstart (\d+\.\d+)', out)
     if match:
-        if match.group(1) == '0.6':
+        if match.group(1) == '0.6' or match.group(1) == '0.8':
             load += ['upstart_0_6']
-        elif match.group(1) == '0.10':
-            load += ['upstart_0_10']
+        else:
+            load += ['upstart_1']
     return load
