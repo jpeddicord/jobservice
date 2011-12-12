@@ -69,6 +69,7 @@ class ServiceBackend(ServiceBase):
             'pid': 0,
             'starton': Array(signature='s'),
             'stopon': Array(signature='s'),
+            'description': '',
         }
         job_name, inst_name = self._split_job(name)
         # job-level properties
@@ -78,13 +79,16 @@ class ServiceBackend(ServiceBase):
                 dbus_interface=PROPERTIES_IFACE)
         # starton/stopon
         info['file'] = '/etc/init/{0}.conf'.format(job_name)
-        with open(info['file']) as conf:
-            starton = self._parse_conf(conf, 'start on')
-            stopon = self._parse_conf(conf, 'stop on')
-            info['starton'] += self._extract_events(starton)
-            info['stopon'] += self._extract_events(stopon)
-            # automatic if starton isn't commented out
-            info['automatic'] = (starton[0] != '#')
+        try:
+            with open(info['file']) as conf:
+                starton = self._parse_conf(conf, 'start on')
+                stopon = self._parse_conf(conf, 'stop on')
+                info['starton'] += self._extract_events(starton)
+                info['stopon'] += self._extract_events(stopon)
+                # automatic if starton isn't commented out
+                info['automatic'] = (starton[0] != '#')
+        except:
+            return info
         # running state: check the instance(s)
         inst_obj, inst_props = self._get_inst(job_name, inst_name)
         if inst_obj:
